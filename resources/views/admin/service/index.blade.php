@@ -28,7 +28,7 @@
       <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="x_panel">
           <div class="x_title">
-            <a href="{{ route('admin.linhvuc.add') }}" class="btn btn-primary">Thêm</a>
+            <a href="{{ route('admin.service.add') }}" class="btn btn-primary">Thêm</a>
             <ul class="nav navbar-right panel_toolbox">
               <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
               </li>
@@ -51,8 +51,8 @@
               <tbody>
                 @foreach($arItems as $key => $arItem)
                 <?php
-                $urlEdit = route('admin.linhvuc.edit', $arItem['id']);
-                $urlDel  = route('admin.linhvuc.del', $arItem['id']); 
+                $urlEdit = route('admin.service.edit', $arItem['id']);
+                $urlDel  = route('admin.service.del', $arItem['id']); 
                 ?>
                 <tr>
                   <td>{{ $arItem['id'] }}</td>

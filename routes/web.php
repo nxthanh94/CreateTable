@@ -23,41 +23,69 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin','middleware' => 'auth'
 		'as'  => 'admin.index.index'
 	]);
 
-	//Quản lý tin tức
-	Route::group(['prefix' => 'tin-tuc'], function () {
+	//Quản lý service
+	Route::group(['prefix' => 'service'], function () {
 		Route::get('',[
-			'uses' => 'NewsController@index',
-			'as'  => 'admin.news.index'
-		]);
-
-		Route::get('chi-tiet/{id}',[
-			'uses' => 'NewsController@chitiet',
-			'as'  => 'admin.news.chitiet'
+			'uses' => 'ServiceController@index',
+			'as'  => 'admin.service.index'
 		]);
 
 		Route::get('add',[
-			'uses' => 'NewsController@getadd',
-			'as'  => 'admin.news.add'
+			'uses' => 'ServiceController@getadd',
+			'as'  => 'admin.service.add'
 		]);
 
 		Route::post('add',[
-			'uses' => 'NewsController@postadd',
-			'as'  => 'admin.news.add'
+			'uses' => 'ServiceController@postadd',
+			'as'  => 'admin.service.add'
 		]);
 
 		Route::get('edit/{id}',[
-			'uses' => 'NewsController@getedit',
-			'as'  => 'admin.news.edit'
+			'uses' => 'ServiceController@getedit',
+			'as'  => 'admin.service.edit'
 		]);
 
 		Route::post('edit/{id}',[
-			'uses' => 'NewsController@postedit',
-			'as'  => 'admin.news.edit'
+			'uses' => 'ServiceController@postedit',
+			'as'  => 'admin.service.edit'
 		]);
 
 		Route::get('/del/{id}',[
-			'uses' => 'NewsController@del',
-			'as'  => 'admin.news.del'
+			'uses' => 'ServiceController@del',
+			'as'  => 'admin.service.del'
+		]);
+	});
+
+	//Quản lý process
+	Route::group(['prefix' => 'process'], function () {
+		Route::get('',[
+			'uses' => 'ProcessController@index',
+			'as'  => 'admin.process.index'
+		]);
+
+		Route::get('add',[
+			'uses' => 'ProcessController@getadd',
+			'as'  => 'admin.process.add'
+		]);
+
+		Route::post('add',[
+			'uses' => 'ProcessController@postadd',
+			'as'  => 'admin.process.add'
+		]);
+
+		Route::get('edit/{id}',[
+			'uses' => 'ProcessController@getedit',
+			'as'  => 'admin.process.edit'
+		]);
+
+		Route::post('edit/{id}',[
+			'uses' => 'ProcessController@postedit',
+			'as'  => 'admin.process.edit'
+		]);
+
+		Route::get('/del/{id}',[
+			'uses' => 'ProcessController@del',
+			'as'  => 'admin.process.del'
 		]);
 	});
 

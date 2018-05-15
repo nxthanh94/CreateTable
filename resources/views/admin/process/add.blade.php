@@ -6,7 +6,7 @@
   <div class="">
     <div class="page-title">
       <div class="title_left">
-        <h3>Lĩnh vực</h3>
+        <h3>Quá trình</h3>
       </div>
 
     </div>
@@ -27,18 +27,32 @@
           </div>
           <div class="x_content">
 
-            <form class="form-horizontal form-label-left" novalidate action="{{ route('admin.linhvuc.add') }}" method="POST" enctype="multipart/form-data">
+            <form class="form-horizontal form-label-left" novalidate action="{{ route('admin.process.add') }}" method="POST" enctype="multipart/form-data">
               {{ csrf_field() }}
               <div class="col-md-9 col-sm-12 col-xs-12">
                 <div class="x_panel">
                   <div class="x_title">
                     <div class="item form-group">
-                      <label class="control-label col-md-2 col-sm-2 col-xs-12">Lĩnh vực</label>
+                      <label class="control-label col-md-2 col-sm-2 col-xs-12">Danh mục</label>
                       <div class="col-md-10 col-sm-10 col-xs-12">
-                        <input id="name" class="form-control col-md-7 col-xs-12" name="name" placeholder="Vui lòng nhập thông tin" required="required" type="text">
+                        <input id="name" class="form-control col-md-7 col-xs-12" name="name" placeholder="Vui lòng nhập thông tin" required="required" type="text" maxlength="255" value="{{ old('name') }}">
+                        @if ($errors->Has ('name'))
+                           <p style="color:red;margin-bottom: 0px;display: inline-block;margin-top: 5px;"> {!!  $errors->First ('name') !!} </p>
+                        @endif
                       </div>
                     </div>
-                   
+                    <div class="item form-group">
+                      <label class="control-label col-md-2 col-sm-2 col-xs-12" for="textarea">Detail</label>
+                      <div class="col-md-10 col-sm-10 col-xs-12">
+                        <textarea id="textarea" required="required" name="content" class="form-control col-md-7 col-xs-12"></textarea>
+                        <script>
+                         CKEDITOR.replace('content');
+                       </script>
+                       @if ($errors->Has ('content'))
+                           <p style="color:red;margin-bottom: 0px;display: inline-block;margin-top: 5px;"> {!!  $errors->First ('content') !!} </p>
+                        @endif
+                     </div>
+                   </div>
                   </div>
                 </div>
               </div>

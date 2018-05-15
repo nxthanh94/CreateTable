@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>DataTables | Gentelella</title>
+    <title>Trang quản trị hệ thống</title>
 
     <!-- Bootstrap -->
     <link href="{{ $url_admin }}/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -64,6 +64,10 @@
                 <h3>General</h3>
                 <ul class="nav side-menu">
                   <li><a href="{{ route('admin.index.index') }}"><i class="fa fa-user"></i> Index </a>
+                  </li>
+                  <li><a href="{{ route('admin.service.index') }}"><i class="fa fa-arrows" aria-hidden="true"></i> Lĩnh vực </a>
+                  </li>
+                  <li><a href="{{ route('admin.process.index') }}"><i class="fa fa-line-chart" aria-hidden="true"></i> Quá trình </a>
                   </li>
                   
                   <li><a><i class="fa fa-home"></i> Home <span class="fa fa-chevron-down"></span></a>
