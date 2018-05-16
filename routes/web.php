@@ -103,6 +103,21 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin','middleware' => 'auth'
 			'uses'=>'TableController@addtable_value',
 			'as'=>'admin.table.posttbale'
 		]);
+		Route::get('edit/{id}',[
+			'uses' => 'TableController@getedit',
+			'as'  => 'admin.table.edit'
+		]);
+		Route::post('edit/{id}',[
+			'uses' => 'TableController@postedit',
+			'as'  => 'admin.table.edit'
+		]);
+		Route::get('/del/{id}',[
+			'uses' => 'TableController@del',
+			'as'  => 'admin.table.del'
+		]);
+	});
+	Route::group(['prefix'=>'collums'], function(){
+
 	});
 	//Quản lý users
 	Route::group(['prefix' => 'nguoi-dung'], function () {
