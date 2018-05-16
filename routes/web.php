@@ -88,7 +88,22 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin','middleware' => 'auth'
 			'as'  => 'admin.process.del'
 		]);
 	});
+	//Quản lý table
+	Route::group(['prefix'=>'table'], function(){
+		Route::get('',[
+			'uses'=>'TableController@index',
+			'as'=>'admin.table.index'
+		]);
+		Route::get('add-table',[
+			'uses'=>'TableController@addtable',
+			'as'=>'admin.table.addtable'
+		]);
 
+		Route::post('add-table',[
+			'uses'=>'TableController@addtable_value',
+			'as'=>'admin.table.posttbale'
+		]);
+	});
 	//Quản lý users
 	Route::group(['prefix' => 'nguoi-dung'], function () {
 		Route::get('',[
