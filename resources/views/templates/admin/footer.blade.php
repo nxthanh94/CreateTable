@@ -73,6 +73,54 @@
         document.getElementById("right_col").style.minHeight = l + "px";
     });
 </script>
-
+<script type="text/javascript">
+    $('.add-collum').click(function(){
+      var html = $('.content-frm-collum').html();
+      var stt_o = $('.content-frm-collum .content-stt').html();
+      var stt = parseInt(stt_o)+1;
+      $('.content-frm-collum .content-stt').html(stt);
+      $('.content-add-collums').append(html);
+    });
+</script>
+<script type="text/javascript">
+	$('.get_table').change(function() {
+		var id_sevice = $(this).val();
+		 var token = $("input[name='_token']").val(); 
+		 jQuery.ajax({
+			type: 'POST',
+			url: "{{route('admin.collums.ajaxtable')}}",
+            dataType:'json',
+			data: {id_sevice:id_sevice,_token:token},			
+			success: function(data) {										
+					if(data.value==0)
+                    {
+                        alert('Chưa tạo bảng cho dịch vụ này');
+                    }
+                    else
+                    {
+                    	$('.show_table').html(data.value);
+                    }
+				}
+		   });
+	});
+</script>
+<script type="text/javascript">
+  function change_value(table,id,collums,value)
+  {
+      var _token = '{{csrf_token()}}';
+      jQuery.ajax({
+      type: 'POST',
+      url: "{{route('admin.collums.ajaxchangevalue')}}",
+            dataType:'json',
+      data: {id:id,table:table,collums:collums,value:value,_token:_token},      
+      success: function(data) {                   
+          if(data.tb==0)
+                    {
+                        alert('Chưa cập nhập được dữ liệu');
+                    }
+        }
+       });
+  }
+</script>
 </body>
 </html>

@@ -87,6 +87,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin','middleware' => 'auth'
 			'uses' => 'ProcessController@del',
 			'as'  => 'admin.process.del'
 		]);
+		
 	});
 	//Quản lý table
 	Route::group(['prefix'=>'table'], function(){
@@ -115,9 +116,43 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin','middleware' => 'auth'
 			'uses' => 'TableController@del',
 			'as'  => 'admin.table.del'
 		]);
-	});
-	Route::group(['prefix'=>'collums'], function(){
 
+	});
+	//Quản lý collums
+	Route::group(['prefix'=>'collums'], function(){
+		route::get('control/{id_table}',[
+			'uses'=>'CollumsController@index',
+			'as'=>'admin.collums.index'
+		]);
+		route::get('/add/',[
+			'uses'=>'CollumsController@addget',
+			'as' =>'admin.collums.addget'
+		]);
+
+		route::post('/add',[
+			'uses'=>'CollumsController@addpost',
+			'as' =>'admin.collums.add'
+		]);
+		Route::post('ajax-get-table',[
+			'uses' => 'CollumsController@gettable_ajax',
+			'as'  => 'admin.collums.ajaxtable'
+		]);
+		Route::post('change-value',[
+			'uses' => 'CollumsController@change_value',
+			'as'  => 'admin.collums.ajaxchangevalue'
+		]);
+		Route::get('/edit/{id}',[
+			'uses' => 'CollumsController@getedit',
+			'as'  => 'admin.collums.edit'
+		]);
+		Route::post('/edit/{id}',[
+			'uses' => 'CollumsController@postedit',
+			'as'  => 'admin.collums.edit'
+		]);
+		Route::get('/del/{id}',[
+			'uses' => 'CollumsController@del',
+			'as'  => 'admin.collums.del'
+		]);
 	});
 	//Quản lý users
 	Route::group(['prefix' => 'nguoi-dung'], function () {

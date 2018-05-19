@@ -5,6 +5,9 @@ use Validator;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\MessageBag;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 use App\service;
 use App\table;
 
@@ -72,7 +75,7 @@ class TableController extends Controller
             $table->footer =  $this->value_frm['footer'];
             $table->id_user = 0;
             $table->id_sevice = $this->value_frm['linhvuc'];
-            $table->name_table = 'table'.$this->value_frm['linhvuc'].time();
+            $table->name_table = 'tb'.str_replace("-","_",str_slug($this->value_frm['name'])).time();
             $table->save();
             $request->session()->flash('msg','Thêm thành công');
             return redirect()->route('admin.table.index');
@@ -128,6 +131,8 @@ class TableController extends Controller
         }
     }
     public function del($id, Request $request){
+        $table = table::where('id',$id)->get();
+        Schema::dropIfExists($table[0]['name_table']);
         $arItems = table::find($id);
         $arItems->delete();
         
