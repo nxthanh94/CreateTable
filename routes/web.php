@@ -93,33 +93,66 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin','middleware' => 'auth'
 	Route::group(['prefix' => 'nguoi-dung'], function () {
 		Route::get('',[
 			'uses' => 'UsersController@index',
-			'as'  => 'admin.users.index'
+			'as'  => 'admin.user.index'
 		]);
 
 		Route::get('add',[
 			'uses' => 'UsersController@getadd',
-			'as'  => 'admin.users.add'
+			'as'  => 'admin.user.add'
 		]);
 
 		Route::post('add',[
 			'uses' => 'UsersController@postadd',
-			'as'  => 'admin.users.add'
+			'as'  => 'admin.user.add'
 		]);
 
 		Route::get('edit/{id}',[
 			'uses' => 'UsersController@getedit',
-			'as'  => 'admin.users.edit'
+			'as'  => 'admin.user.edit'
 		]);
 
 		Route::post('edit/{id}',[
 			'uses' => 'UsersController@postedit',
-			'as'  => 'admin.users.edit'
+			'as'  => 'admin.user.edit'
 		]);
 
 		Route::get('del/{id}',[
 			'uses' => 'UsersController@del',
-			'as' => 'admin.users.del'
+			'as' => 'admin.user.del'
 		])->middleware('role1');
+	});
+
+	//Quản lý service
+	Route::group(['prefix' => 'level'], function () {
+		Route::get('',[
+			'uses' => 'LevelController@index',
+			'as'  => 'admin.level.index'
+		]);
+
+		Route::get('add',[
+			'uses' => 'LevelController@getadd',
+			'as'  => 'admin.level.add'
+		]);
+
+		Route::post('add',[
+			'uses' => 'LevelController@postadd',
+			'as'  => 'admin.level.add'
+		]);
+
+		Route::get('edit/{id}',[
+			'uses' => 'LevelController@getedit',
+			'as'  => 'admin.level.edit'
+		]);
+
+		Route::post('edit/{id}',[
+			'uses' => 'LevelController@postedit',
+			'as'  => 'admin.level.edit'
+		]);
+
+		Route::get('/del/{id}',[
+			'uses' => 'LevelController@del',
+			'as'  => 'admin.level.del'
+		]);
 	});
 
 	

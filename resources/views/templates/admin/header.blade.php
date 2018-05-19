@@ -63,7 +63,11 @@
               <div class="menu_section">
                 <h3>General</h3>
                 <ul class="nav side-menu">
-                  <li><a href="{{ route('admin.index.index') }}"><i class="fa fa-user"></i> Index </a>
+                  <li><a><i class="fa fa-user"></i> User <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="{{ route('admin.user.index') }}">User</a></li>
+                      <li><a href="{{ route('admin.level.index') }}">Level</a></li>
+                    </ul>
                   </li>
                   <li><a href="{{ route('admin.service.index') }}"><i class="fa fa-arrows" aria-hidden="true"></i> Lĩnh vực </a>
                   </li>
