@@ -39,28 +39,28 @@ class CollumsController extends Controller
              $data = array(
             'arItems'=> $collums,
             'title'=>'Quảng lý table',
+            'id_table'=>$id_table,
             );
             return view('admin.collums.index',$data);
         }
         else
         {
-            return redirect()->route('admin.collums.add');
+            return redirect()->route('admin.collums.add',$id_table);
         }
        
     }
-    public function addget()
+    public function addget($id_table)
     {
     	$data = array(
     		'value_frm'	=>$this->value_frm,
-    		'table'		=> table::get(),
-    		'service'	=> service::get(),
-    		'action' 	=> 'admin.collums.add',
+    		'action' 	=>'admin.collums.add',
+            'table'     =>table::where('id',$id_table)->get(),
     		'title' 	=>'Thêm cột',
     		'type' 		=>$this->type,
     	);
     	return view('admin.collums.collums_frm',$data);
     }
-    public function addpost(Request $request)
+    public function addpost($id_table,Request $request)
     {
     	$data_frm = $request->all();
     	$data_name = $data_frm['name'];
@@ -80,15 +80,15 @@ class CollumsController extends Controller
     	}
     	else
     	{
-            $id_table = $data_frm['id_table'];
             $name_table = table::where('id',$id_table)->get();
+            $id_sevice = $name_table[0]['id_sevice'];
             if(!Schema::hasTable($name_table[0]['name_table']))
             {
                 for ($i=0 ; $i < count($data_frm['name']) ; $i++) { 
                 $table = new collums;
                 $labe = str_replace("-","_",str_slug($data_frm['name'][$i]));
-                $table->id_table = $data_frm['id_table'];
-                $table->id_sevice = $data_frm['id_sevice'];
+                $table->id_table = $id_table;
+                $table->id_sevice = $id_sevice;
                 $table->null = 1;
                 $table->stt = $i+1;
                 $table->name = $data_frm['name'][$i];
@@ -98,25 +98,99 @@ class CollumsController extends Controller
                 }
                 
                 $colums = collums::where('id_table',$id_table)->get();
-                //$colums = array_unique($data_name);
-                if($this->create_table_user($colums,$name_table[0]['name_table'])==true)
-                {
-                    $request->session()->flash('msg','Thêm thành công');
-                    return redirect()->route('admin.table.index');
-                }
-                else
-                {
-                    $request->session()->flash('msg','Bảng đã được tạo không thể tạo thêm bảng này!');
-                    return redirect()->route('admin.table.index');
-                }
+                $this->create_table_user($colums,$name_table[0]['name_table']);
+                $request->session()->flash('msg','Thêm cột thành công');
+                return redirect()->route('admin.collums.index',$id_table);
             }
             else
             {
-                $request->session()->flash('msg','Bảng đã được tạo không thể tạo thêm bảng này!');
+                $request->session()->flash('msg','Bảng đã được tạo');
                 return redirect()->route('admin.table.index');
             }
     	}
 
+    }
+    public function addcollumsget($id_table)
+    {
+        $data = array(
+            'value_frm' =>$this->value_frm,
+            'action'    =>'admin.collums.addcollums',
+            'table'     =>table::where('id',$id_table)->get(),
+            'title'     =>'Thêm cột',
+            'type'      =>$this->type,
+        );
+        return view('admin.collums.collums_frm',$data);
+    }
+
+    public function addcollumspost($id_table, Request $request)
+    {
+        $data_frm = $request->all();
+        $data_name = $data_frm['name'];
+        $data_name = array_unique($data_name);
+        if(count($data_name)!=count($data_frm['name']))
+        {
+            $data_frm['id'] =null;
+            $data = array(
+            'value_frm' => $data_frm,
+            'table'     => table::get(),
+            
+            'action'    => 'admin.collums.add',
+            'title'     => 'Thêm cột',
+            'type'      => $this->type,
+            );
+            return view('admin.collums.collums_frm',$data);
+        }
+        else
+        {
+            $name_table = table::where('id',$id_table)->get();
+            $id_sevice = $name_table[0]['id_sevice'];
+            $errors ="";
+            if(Schema::hasTable($name_table[0]['name_table']))
+            {
+                for ($i=0 ; $i < count($data_frm['name']) ; $i++) {
+                    $labe = str_replace("-","_",str_slug($data_frm['name'][$i]));
+                    $type = $data_frm['type'][$i];
+                    if(!Schema::hasColumn($name_table[0]['name_table'],$labe ))
+                    {
+                        $table = new collums;
+                        $table->id_table = $id_table;
+                        $table->id_sevice = $id_sevice;
+                        $table->null = 1;
+                        $table->stt = $i+1;
+                        $table->name = $data_frm['name'][$i];
+                        $table->type = $data_frm['type'][$i];
+                        $table->label =$labe;
+                        $table->save();
+                        $this->boot();
+                        $this->addcollums_table($name_table[0]['name_table'],$labe,$type);
+                    }
+                    else
+                    {
+                        $errors .= $label.', ';
+                    }
+                    
+                }
+                if(!empty($errors))
+                {
+                    $errors .= "cột đã tồn tại"; 
+                }
+                $request->session()->flash('msg','Bảng đã chưa được tạo '.$errors);
+                return redirect()->route('admin.collums.index',$id_table);
+            }
+            else
+            {
+                $data_frm['id'] =null;
+                $data = array(
+                'value_frm' => $data_frm,
+                'table'     => table::get(),
+                'action'    => 'admin.collums.add',
+                'title'     => 'Thêm cột',
+                'type'      => $this->type,
+                );
+                $request->session()->flash('msg','Bảng đã chưa được tạo');
+                return view('admin.collums.collums_frm');
+            }
+        }
     }
     public function gettable_ajax(Request $request)
     {
@@ -147,6 +221,43 @@ class CollumsController extends Controller
             $return['tb'] = 'ok';
             echo json_encode($return);
         }
+    }
+    public function boot()
+    {
+        Schema::defaultStringLength(191);
+    }
+    public function addcollums_table($table_name, $collums, $type)
+    {
+        $this->colums_table = array('label'=>$collums,'type'=>$type);
+        schema::table($table_name,function(Blueprint $table){
+            switch ($this->colums_table['type']) {
+                        case 'int':
+                            $table->integer($this->colums_table['label']);
+                            break;
+
+                        case 'float':
+                            $table->float($this->colums_table['label']);
+                            break;
+
+                        case 'tinyInteger':
+                            $table->tinyInteger($this->colums_table['label']);
+                            break;
+
+                        case 'date':
+                            $table->date($this->colums_table['label']);
+                            break;
+
+                        case 'string':
+                            $table->string($this->colums_table['label']);
+                            break;
+
+                        case 'text':
+                            $table->text($this->colums_table['label']);
+                            break;
+                        default:
+                            break;
+                    }
+        });
     }
     public function create_table_user($colums,$table_name)
     {
@@ -237,10 +348,14 @@ class CollumsController extends Controller
     public function del_table_collums($table_name, $collums)
     {
         $this->collums =$collums;
-        Schema::table($table_name, function($table)
+        if (Schema::hasColumn($table_name, $collums))
         {
-            $table->dropColumn($this->collums);
-        });
+            Schema::table($table_name, function($table)
+            {
+                $table->dropColumn($this->collums);
+            });
+        }
+        
     }
     public function getedit($id)
     {

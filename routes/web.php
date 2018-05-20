@@ -124,14 +124,23 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin','middleware' => 'auth'
 			'uses'=>'CollumsController@index',
 			'as'=>'admin.collums.index'
 		]);
-		route::get('/add/',[
+		route::get('/add/{id_table}',[
 			'uses'=>'CollumsController@addget',
 			'as' =>'admin.collums.addget'
 		]);
 
-		route::post('/add',[
+		route::post('/add/{id_table}',[
 			'uses'=>'CollumsController@addpost',
 			'as' =>'admin.collums.add'
+		]);
+		route::get('/add-collums/{id_table}',[
+			'uses'=>'CollumsController@addcollumsget',
+			'as' =>'admin.collums.addcollums'
+		]);
+
+		route::post('/add-collums/{id_table}',[
+			'uses'=>'CollumsController@addcollumspost',
+			'as' =>'admin.collums.addcollums'
 		]);
 		Route::post('ajax-get-table',[
 			'uses' => 'CollumsController@gettable_ajax',
@@ -152,6 +161,17 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin','middleware' => 'auth'
 		Route::get('/del/{id}',[
 			'uses' => 'CollumsController@del',
 			'as'  => 'admin.collums.del'
+		]);
+	});
+	//Quảng lý group collom
+	Route::group(['prefix' => 'group-collums'], function () {
+		route::get('add/{id_table}',[
+			'uses'	=>'GroupcollumsController@getadd',
+			'as'	=>'admin.groupcollums.add'
+		]);
+		route::post('add/{id_table}',[
+			'uses'	=>'GroupcollumsController@postadd',
+			'as'	=>'admin.groupcollums.add'
 		]);
 	});
 	//Quản lý users

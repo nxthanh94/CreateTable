@@ -31,38 +31,8 @@
                 <div class="x_panel">
                   <div class="x_title">
                     <div class="content-add-collums">
-                        @if(count($value_frm['name'])>0 && $value_frm['name']!='')
-                          @for($i=0;$i<count($value_frm['name']);$i++)
-                           <div class="item-cot" style="border: 1px solid #ccc; padding: 10px 0px; margin-bottom:20px">
-                              <div class="item form-group">
-                                <label class="control-label col-md-2 col-sm-2 col-xs-12">Tên cột thứ <span class="content-stt">{{$i+1}}</span></label>
-                                <div class="col-md-10 col-sm-10 col-xs-12">
-                                  <input id="name" class="form-control col-md-7 col-xs-12" data-validate-length-range="6" name="name[]" placeholder="Vui lòng nhập tên cột" required="required" type="text" maxlength="255" value="{{$value_frm['name'][$i]}}">
-                                </div>
-                              </div>
-                              <div class="item form-group">
-                                <label class="control-label col-md-2 col-sm-2 col-xs-12">Type</label>
-                                <div class="col-md-10 col-sm-10 col-xs-12">
-                                  <select id="heard" class="form-control" required name="type[]">
-                                      @foreach( $type as $key=>$item)
-                                        <option @if($key == $value_frm['type'][$i])  selected="true" @endif value="{{$key}}">{{$item}}</option>
-                                      @endforeach
-                                  </select>
-                                </div>
-
-                            </div>
-                      
-                          </div> 
-                          @endfor
-                        @endif
                     </div>
                   </div>
-                    
-                    <div class="item form-group">
-                        <div class="col-md-12 col-sm-12 col-xs-12">
-                          <a class="add-collum btn btn-dark">Thêm cột</a>
-                        </div>
-                    </div>
                 </div>
               </div>
               <div class="col-md-3 col-sm-12 col-xs-12">
