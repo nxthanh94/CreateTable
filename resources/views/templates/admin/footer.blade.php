@@ -122,5 +122,20 @@
        });
   }
 </script>
+<script type="text/javascript">
+  $('.check_value').click(function() {
+    var id = $(this).val();
+    var id_group;
+    if($(this).prop('checked')==true)
+    {
+      id_group = $(this).attr('data');
+    }
+    else
+    {
+      id_group = null;
+    }
+    change_value('collums',id,'id_group',id_group);
+  });
+</script>
 </body>
 </html>

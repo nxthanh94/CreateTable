@@ -43,7 +43,7 @@
                     <div class="col-md-10 col-sm-10 col-xs-12">
                       @foreach($collums as $Item)
                         <div class="item-collums col-md-12 col-sm-12">
-                          <input style="width:25px;height: 17px;" type="checkbox" name="id_collums[]" @if(array_search($Item['id'],$collums_group)!='') checked="true" @endif value="{{$Item['id']}}"><label >{{$Item['name']}}</label>
+                          <input style="width:25px;height: 17px;" class="check_value" data="{{$value_frm['id']}}" type="checkbox" name="id_collums[]" @if(array_search($Item['id'],$collums_group)!='') checked="true" @endif value="{{$Item['id']}}"><label >{{$Item['name']}}</label>
                         </div>
                       @endforeach
                     </div>

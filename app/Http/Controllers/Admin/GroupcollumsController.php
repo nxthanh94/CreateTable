@@ -30,7 +30,7 @@ class GroupcollumsController extends Controller
     	$data = array(
     		'title' 	=>'Group cột',
     		'action'	=>'admin.groupcollums.add',
-    		'collums'	=> collums::where('id_table',$id_table)->get(),
+    		'collums'	=> collums::where('id_table',$id_table)->where('id_group', null)->get(),
     		'id_table'	=> $id_table,
     		'value_frm'	=> $this->value_frm,
     	);
@@ -70,6 +70,12 @@ class GroupcollumsController extends Controller
     }
     public function postedit($id, Request $request)
     {
+    	$collums = collums::where('id_group',$id)->get();
     	$data_frm = $request->all();
+    	$table = groupcollums::find($id);
+    	$table->name = $data_frm['name'];
+    	$table->update();
+    	$request->session()->flash('msg','Group đã chưa được tạo');
+        return redirect()->route('admin.groupcollums.index',$collums[0]['id_table']);
     }
 }
