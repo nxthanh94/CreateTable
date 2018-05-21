@@ -29,6 +29,7 @@
         <div class="x_panel">
           <div class="x_title">
             <a href="{{ route('admin.table.addtable') }}" class="btn btn-primary">Thêm</a>
+            
             <ul class="nav navbar-right panel_toolbox">
               <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
               </li>

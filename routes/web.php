@@ -165,6 +165,10 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin','middleware' => 'auth'
 	});
 	//Quảng lý group collom
 	Route::group(['prefix' => 'group-collums'], function () {
+		route::get('group/{id_table}',[
+			'uses'	=>'GroupcollumsController@index',
+			'as'	=>'admin.groupcollums.index'
+		]);
 		route::get('add/{id_table}',[
 			'uses'	=>'GroupcollumsController@getadd',
 			'as'	=>'admin.groupcollums.add'
@@ -172,6 +176,18 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin','middleware' => 'auth'
 		route::post('add/{id_table}',[
 			'uses'	=>'GroupcollumsController@postadd',
 			'as'	=>'admin.groupcollums.add'
+		]);
+		route::get('edit/{id}',[
+			'uses'	=>'GroupcollumsController@getedit',
+			'as'	=>'admin.groupcollums.edit'
+		]);
+		route::post('edit/{id}',[
+			'uses'	=>'GroupcollumsController@postedit',
+			'as'	=>'admin.groupcollums.edit'
+		]);
+		Route::get('/del/{id}',[
+			'uses' => 'GroupcollumsController@del',
+			'as'  => 'admin.groupcollums.del'
 		]);
 	});
 	//Quản lý users

@@ -28,9 +28,8 @@
       <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="x_panel">
           <div class="x_title">
-            <a href="{{ route('admin.collums.addcollums',$id_table) }}" class="btn btn-primary">Thêm cột</a>
-            <a href="{{ route('admin.groupcollums.index',$id_table) }}" class="btn btn-primary">Quản lý Group</a>
-            <a href="{{ route('admin.groupcollums.add',$id_table) }}" class="btn btn-primary">Tạo Group</a>
+            <a href="{{ route('admin.groupcollums.add',$id_table) }}" class="btn btn-primary">Thêm</a>
+            
             <ul class="nav navbar-right panel_toolbox">
               <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
               </li>
@@ -43,10 +42,9 @@
             <table id="datatable" class="table table-striped table-bordered">
               <thead>
                 <tr>
-				  <th  width="40px">STT</th>
                   <th width="30px">ID</th>
-                  <th >Name</th>
-                  <th width="100px">Thao tác</th>
+                  <th>Name</th>
+                  <th width="150px">Thao tác</th>
                 </tr>
               </thead>
 
@@ -54,16 +52,14 @@
               <tbody>
                 @foreach($arItems as $key => $arItem)
                 <?php
-                $urlEdit = route('admin.collums.edit', $arItem['id']);
-                $urlDel  = route('admin.collums.del', $arItem['id']);
-               	$label = "'stt'";
+                $urlEdit = route('admin.groupcollums.edit', $arItem['id']);
+                $urlDel  = route('admin.groupcollums.del', $arItem['id']); 
                 ?>
                 <tr>
-                  <td align="center"><input onblur="change_value('collums',{{$arItem['id']}},{{$label}},this.value)" style="width: 30px; padding: 2px 5px" type="text" name="stt" data="{{$arItem['id']}}" value="{{$arItem['stt']}}"></td>
                   <td>{{ $arItem['id'] }}</td>
                   <td>{{ $arItem['name'] }}</td>
                   <td>
-                  	
+                    
                     <a class="btn btn-success btn-xs" href="{{ $urlEdit }}">
                       <i class="fa fa-pencil"></i> Sửa
                     </a>

@@ -14,7 +14,7 @@
       <div class="col-md-12">
         <div class="x_panel">
           <div class="x_title">
-            <h2>Tạo group</h2>
+            <h2>Sửa group</h2>
             <ul class="nav navbar-right panel_toolbox">
               <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
               </li>
@@ -25,7 +25,7 @@
           </div>
           <div class="x_content">
 
-            <form class="form-horizontal form-label-left" novalidate action="{{ route($action,$id_table) }}" method="post" enctype="multipart/form-data">
+            <form class="form-horizontal form-label-left" novalidate action="{{ route($action,$value_frm['id']) }}" method="post" enctype="multipart/form-data">
               {{csrf_field()}}
               <div class="col-md-9 col-sm-12 col-xs-12">
                 <div class="x_panel">
@@ -43,7 +43,7 @@
                     <div class="col-md-10 col-sm-10 col-xs-12">
                       @foreach($collums as $Item)
                         <div class="item-collums col-md-12 col-sm-12">
-                          <input style="width:25px;height: 17px;" type="checkbox" name="id_collums[]" value="{{$Item['id']}}"><label >{{$Item['name']}}</label>
+                          <input style="width:25px;height: 17px;" type="checkbox" name="id_collums[]" @if(array_search($Item['id'],$collums_group)!='') checked="true" @endif value="{{$Item['id']}}"><label >{{$Item['name']}}</label>
                         </div>
                       @endforeach
                     </div>
@@ -55,7 +55,7 @@
                 <div class="x_panel">
                   <div class="x_content">
                     <button type="reset" class="btn btn-dark" >Reset</button>
-                    <button id="send" type="submit" class="btn btn-dark" >Thêm</button>
+                    <button id="send" type="submit" class="btn btn-dark" >Submit</button>
                   </div>
                 </div>
               </div>
