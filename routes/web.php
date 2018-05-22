@@ -14,7 +14,10 @@
 Route::get('/', function () {
     return view('welcome');
 });
-
+Route::get('',[
+	'uses'	=>'IndexController@index',
+	'as'	=>'index'
+]);
 //////////////////////////////////////////////////////////////////
 //Quản lý admin
 Route::group(['namespace' => 'Admin', 'prefix' => 'admin','middleware' => 'auth','middleware' =>'role'], function () {

@@ -87,7 +87,13 @@
                       
                     </ul>
                   </li>
-                  <li><a><i class="fa fa-clone"></i>Xem bảng và in <span class="fa fa-chevron-down"></span></a>
+                  <li><a><i class="fa fa-clone"></i>Bàn giao <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="fixed_sidebar.html">Fixed Sidebar</a></li>
+                      <li><a href="fixed_footer.html">Fixed Footer</a></li>
+                    </ul>
+                  </li>
+                  <li><a><i class="fa fa-envelope-o"></i>Thông báo <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                       <li><a href="fixed_sidebar.html">Fixed Sidebar</a></li>
                       <li><a href="fixed_footer.html">Fixed Footer</a></li>
@@ -95,7 +101,7 @@
                   </li>
                 </ul>
               </div>
-              <div class="menu_section">
+              <div class="menu_section" style="display: none">
                 <h3>Live On</h3>
                 <ul class="nav side-menu">
                   <li><a><i class="fa fa-bug"></i> Additional Pages <span class="fa fa-chevron-down"></span></a>
