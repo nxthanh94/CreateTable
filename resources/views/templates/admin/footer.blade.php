@@ -123,6 +123,24 @@
   }
 </script>
 <script type="text/javascript">
+  function change_value_process(id_process,id)
+  {
+      var _token = '{{csrf_token()}}';
+      jQuery.ajax({
+      type: 'POST',
+      url: "{{route('admin.process.changevalueajax')}}",
+            dataType:'json',
+      data: {id_process:id_process,id:id,_token:_token},      
+      success: function(data) {                   
+          if(data.tb==0)
+                    {
+                        alert('Chưa cập nhập được dữ liệu');
+                    }
+        }
+       });
+  }
+</script>
+<script type="text/javascript">
   $('.check_value').click(function() {
     var id = $(this).val();
     var id_group;
@@ -135,6 +153,27 @@
       id_group = null;
     }
     change_value('collums',id,'id_group',id_group);
+  });
+</script>
+<script type="text/javascript">
+  $('.filter_table').change(function() {
+    var id = $(this).val();
+    if(id=="null")
+    {
+      $('.item_table').show();
+    }
+    else
+    {
+       $('.item_table').hide();
+       $('.show_'+id).show();
+    }
+  });
+</script>
+<script type="text/javascript">
+  $('.check_value_process').click(function() {
+    var id = $(this).val();
+    var id_process =$(this).attr('data');
+    change_value_process(id_process,id);
   });
 </script>
 </body>

@@ -6,7 +6,7 @@
   <div class="">
     <div class="page-title">
       <div class="title_left">
-        <h3>Dịch vụ</h3>
+        <h3>{{$title}}</h3>
       </div>
 
     </div>
@@ -28,9 +28,7 @@
       <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="x_panel">
           <div class="x_title">
-            <a href="{{ route('admin.service.add') }}" class="btn btn-primary">Thêm</a>
-            <a href="{{ route('admin.newsservice.index') }}" class="btn btn-primary">Quản lý bài viết</a>
-            <a href="{{ route('admin.newsservice.add') }}" class="btn btn-primary">Thêm bài viết</a>
+            <a href="{{ route('admin.newsservice.add') }}" class="btn btn-primary">Thêm</a>
             <ul class="nav navbar-right panel_toolbox">
               <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
               </li>
@@ -43,7 +41,7 @@
             <table id="datatable" class="table table-striped table-bordered">
               <thead>
                 <tr>
-                  <th>ID</th>
+                  <th width="30px">ID</th>
                   <th>Name</th>
                   <th width="100px">Thao tác</th>
                 </tr>
@@ -53,8 +51,8 @@
               <tbody>
                 @foreach($arItems as $key => $arItem)
                 <?php
-                $urlEdit = route('admin.service.edit', $arItem['id']);
-                $urlDel  = route('admin.service.del', $arItem['id']); 
+                $urlEdit = route('admin.newsservice.edit', $arItem['id']);
+                $urlDel  = route('admin.newsservice.del', $arItem['id']); 
                 ?>
                 <tr>
                   <td>{{ $arItem['id'] }}</td>

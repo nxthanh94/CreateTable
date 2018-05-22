@@ -15,6 +15,10 @@ class AddVotesToUsersTable extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->boolean('id_phanquyen');
+            $table->string('username',100)->unique();
+            $table->string('phone',20);
+            $table->string('picture',100)->nullable();
+            $table->string('diachi');
         });
     }
 

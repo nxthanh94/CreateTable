@@ -87,7 +87,10 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin','middleware' => 'auth'
 			'uses' => 'ProcessController@del',
 			'as'  => 'admin.process.del'
 		]);
-		
+		route::post('change-value-ajax',[
+			'uses' => 'ProcessController@changevalueajax',
+			'as'  => 'admin.process.changevalueajax'
+		]);
 	});
 	//Quản lý table
 	Route::group(['prefix'=>'table'], function(){
@@ -115,6 +118,69 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin','middleware' => 'auth'
 		Route::get('/del/{id}',[
 			'uses' => 'TableController@del',
 			'as'  => 'admin.table.del'
+		]);
+
+	});
+	//Quản news newsservice
+	Route::group(['prefix'=>'news-service'], function(){
+		Route::get('',[
+			'uses'=>'NewsserviceController@index',
+			'as'=>'admin.newsservice.index'
+		]);
+		Route::get('add',[
+			'uses'=>'NewsserviceController@getadd',
+			'as'=>'admin.newsservice.add'
+		]);
+
+		Route::post('add',[
+			'uses'=>'NewsserviceController@postadd',
+			'as'=>'admin.newsservice.add'
+		]);
+		Route::get('edit/{id}',[
+			'uses' => 'NewsserviceController@getedit',
+			'as'  => 'admin.newsservice.edit'
+		]);
+		Route::post('edit/{id}',[
+			'uses' => 'NewsserviceController@postedit',
+			'as'  => 'admin.newsservice.edit'
+		]);
+		Route::get('/del/{id}',[
+			'uses' => 'NewsserviceController@del',
+			'as'  => 'admin.newsservice.del'
+		]);
+
+	});
+	//Quản news newspage
+	Route::group(['prefix'=>'news-page'], function(){
+		Route::get('',[
+			'uses'=>'NewspageController@index',
+			'as'=>'admin.newspage.index'
+		]);
+
+		Route::get('addtype/{type_news}',[
+			'uses'=>'NewspageController@getaddtype',
+			'as'=>'admin.newspage.addtype'
+		]);
+		Route::get('add/{type_news}',[
+			'uses'=>'NewspageController@getadd',
+			'as'=>'admin.newspage.add'
+		]);
+
+		Route::post('add/{type_news}',[
+			'uses'=>'NewspageController@postadd',
+			'as'=>'admin.newspage.add'
+		]);
+		Route::get('edit/{id}',[
+			'uses' => 'NewspageController@getedit',
+			'as'  => 'admin.newspage.edit'
+		]);
+		Route::post('edit/{id}',[
+			'uses' => 'NewspageController@postedit',
+			'as'  => 'admin.newspage.edit'
+		]);
+		Route::get('/del/{id}',[
+			'uses' => 'NewsserviceController@del',
+			'as'  => 'admin.newspage.del'
 		]);
 
 	});
@@ -194,33 +260,66 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin','middleware' => 'auth'
 	Route::group(['prefix' => 'nguoi-dung'], function () {
 		Route::get('',[
 			'uses' => 'UsersController@index',
-			'as'  => 'admin.users.index'
+			'as'  => 'admin.user.index'
 		]);
 
 		Route::get('add',[
 			'uses' => 'UsersController@getadd',
-			'as'  => 'admin.users.add'
+			'as'  => 'admin.user.add'
 		]);
 
 		Route::post('add',[
 			'uses' => 'UsersController@postadd',
-			'as'  => 'admin.users.add'
+			'as'  => 'admin.user.add'
 		]);
 
 		Route::get('edit/{id}',[
 			'uses' => 'UsersController@getedit',
-			'as'  => 'admin.users.edit'
+			'as'  => 'admin.user.edit'
 		]);
 
 		Route::post('edit/{id}',[
 			'uses' => 'UsersController@postedit',
-			'as'  => 'admin.users.edit'
+			'as'  => 'admin.user.edit'
 		]);
 
 		Route::get('del/{id}',[
 			'uses' => 'UsersController@del',
-			'as' => 'admin.users.del'
+			'as' => 'admin.user.del'
 		])->middleware('role1');
+	});
+
+	//Quản lý service
+	Route::group(['prefix' => 'level'], function () {
+		Route::get('',[
+			'uses' => 'LevelController@index',
+			'as'  => 'admin.level.index'
+		]);
+
+		Route::get('add',[
+			'uses' => 'LevelController@getadd',
+			'as'  => 'admin.level.add'
+		]);
+
+		Route::post('add',[
+			'uses' => 'LevelController@postadd',
+			'as'  => 'admin.level.add'
+		]);
+
+		Route::get('edit/{id}',[
+			'uses' => 'LevelController@getedit',
+			'as'  => 'admin.level.edit'
+		]);
+
+		Route::post('edit/{id}',[
+			'uses' => 'LevelController@postedit',
+			'as'  => 'admin.level.edit'
+		]);
+
+		Route::get('/del/{id}',[
+			'uses' => 'LevelController@del',
+			'as'  => 'admin.level.del'
+		]);
 	});
 
 	

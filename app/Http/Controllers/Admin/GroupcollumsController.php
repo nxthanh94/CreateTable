@@ -49,6 +49,7 @@ class GroupcollumsController extends Controller
     		$collums->id_group = $id_group;
     		$collums->update();
     	}
+         return redirect()->route('admin.groupcollums.index',$id_table);
     }
     public function getedit($id)
     {

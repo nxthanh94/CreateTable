@@ -64,28 +64,24 @@
               <div class="menu_section">
                 <h3>General</h3>
                 <ul class="nav side-menu">
-                  <li><a href="{{ route('admin.index.index') }}"><i class="fa fa-user"></i> Index </a>
-                  </li>
-                  <li><a href="{{ route('admin.service.index') }}"><i class="fa fa-arrows" aria-hidden="true"></i> Lĩnh vực </a>
-                  </li>
-                  <li><a href="{{ route('admin.process.index') }}"><i class="fa fa-line-chart" aria-hidden="true"></i> Quá trình </a>
-                  </li>
-                  
-                  <li><a><i class="fa fa-home"></i> Home <span class="fa fa-chevron-down"></span></a>
+                  <li><a><i class="fa fa-user"></i> User <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
-                      <li><a href="index.html">Dashboard</a></li>
-                      <li><a href="index2.html">Dashboard2</a></li>
-                      <li><a href="index3.html">Dashboard3</a></li>
+                      <li><a href="{{ route('admin.user.index') }}">User</a></li>
+                      <li><a href="{{ route('admin.level.index') }}">Level</a></li>
                     </ul>
-                  </li>
-                  
+                  </li>                
                   <li><a><i class="fa fa-table"></i> Tables <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                       <li><a href="{{ route('admin.table.index')}}">Bảng</a></li>
-                      <li><a href="tables_dynamic.html">Cột</a></li>
+                      <li><a href="{{ route('admin.service.index') }}"> Dịch vụ </a>
+                      </li>
+                      <li><a href="{{ route('admin.process.index') }}"> Quy trình </a>
+                      </li>
+                      <li><a href="{{ route('admin.newspage.addtype','about') }}"> Giới thiệu </a>
+                      </li>
                     </ul>
                   </li>
-                  <li><a><i class="fa fa-bar-chart-o"></i> Exprot - Report <span class="fa fa-chevron-down"></span></a>
+                  <li><a><i class="fa fa-bar-chart-o"></i> Kinh doanh <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                       <li><a href="chartjs.html">Chart JS</a></li>
                       

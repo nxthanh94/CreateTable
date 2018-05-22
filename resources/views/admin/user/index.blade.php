@@ -46,14 +46,14 @@
               <?php
               $id = $arItem['id'];
               $diachi = $arItem['diachi'];
-              $id_cbcc = $arItem['id_cbcc'];
-              $mota = $arItem['mota'];
+              $email = $arItem['email'];
+              $name = $arItem['name'];
               $username = $arItem['username'];
               $picture = $arItem['picture'];
               $id_phanquyen = $arItem['id_phanquyen'];
               $phone = $arItem['phone'];
               $hinhanh     = $arItem['picture'];
-              $picUrl         = asset("storage/app/files/avata/{$hinhanh}");
+              $picUrl         = url("storage/app/files/avata/{$hinhanh}");
               $urlEdit = route('admin.user.edit', $id);
               $urlDel  = route('admin.user.del', $id);
               ?>
@@ -61,15 +61,12 @@
                 <div class="well profile_view">
                   <div class="col-sm-12">
                     <?php
-                    $arUser = DB::table('phanquyen')->where('id','=',$id_phanquyen)->first(); 
+                    $arUser = DB::table('phanquyen')->where('id',$id_phanquyen)->first(); 
                     ?>
-                    <h4 class="brief" @if($arUser['id'] == 1) style="color: red;font-weight: bold;" @endif><i>{{ $arUser['name'] }}</i></h4>
+                    <h4 class="brief" @if($arUser->id == 1) style="color: red;font-weight: bold;" @endif><i>{{ $arUser->name }}</i></h4>
                     <div class="left col-xs-7">
-                      <?php
-                      $arName = DB::table('id',$id_cbcc)->first(); 
-                      ?>
-                      <h2 style="font-size: 16px;">Demo</h2>
-                      <p><strong>About: </strong> {!! $mota !!} </p>
+                      <h2 style="font-size: 16px;">{{ $name }}</h2>
+                      <p><strong>Email: </strong> {!! $email !!} </p>
                       <ul class="list-unstyled">
                         <li><i class="fa fa-building"></i> Address: {{ $diachi }}</li>
                         <li><i class="fa fa-phone"></i> Phone : {{ $phone }}</li>
