@@ -20,7 +20,7 @@ class AuthController extends Controller
             	return redirect()->route('admin.index.index');
             }
             else{
-            	return redirect()->route('public.index');
+            	return redirect()->route('index');
             }
     }else{
     	$request->session()->flash('msg','Sai username or mật khẩu');
@@ -29,6 +29,6 @@ class AuthController extends Controller
 	}
 	public function logout(){
 		Auth::logout();
-		return redirect()->route('public.index');
+		return redirect()->route('index');
 	}
 }

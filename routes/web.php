@@ -1,15 +1,6 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
+
 Route::pattern('id','([0-9]*)');
 Route::pattern('slug','(.*)');
 Route::get('/', function () {
@@ -23,6 +14,10 @@ Route::get('login',[
 	'uses'	=>'LoginController@index',
 	'as'	=>'login'
 ]);
+Route::get('logout',[
+	'uses'	=>'LoginController@logout',
+	'as'	=>'logout'
+]);
 Route::post('login/checked',[
 	'uses'	=>'LoginController@checklogin',
 	'as'	=>'login.check'
@@ -31,6 +26,34 @@ Route::group(['prefix' => 'dich-vu'], function () {
 	Route::get('{slug}-{id}',[
 		'uses'	=>'ServiceController@getid',
 		'as'	=>'service.getid'
+	]);
+});
+Route::group(['prefix' => 'bang'], function () {
+	Route::get('{slug}-{id}',[
+		'uses'	=>'TableController@getid',
+		'as'	=>'table.getid'
+	]);
+	Route::post('add-row',[
+		'uses'	=>'TableController@addrow',
+		'as'	=>'table.addrow'
+	]);
+	Route::post('apdate-collums',[
+		'uses'	=>'TableController@updatecollums',
+		'as'	=>'table.updatecollums'
+	]);
+	Route::post('copy-row',[
+		'uses'	=>'TableController@copyrow',
+		'as'	=>'table.copyrow'
+	]);
+	Route::post('del-row',[
+		'uses'	=>'TableController@delrow',
+		'as'	=>'table.delrow'
+	]);
+});
+Route::group(['prefix' => 'quy-trinh'], function () {
+	Route::get('{slug}-{id}',[
+		'uses'	=>'ProcessController@getid',
+		'as'	=>'process.getid'
 	]);
 });
 //////////////////////////////////////////////////////////////////
@@ -136,6 +159,10 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin','middleware' => 'auth'
 		Route::get('/del/{id}',[
 			'uses' => 'TableController@del',
 			'as'  => 'admin.table.del'
+		]);
+		Route::post('/add-user-table',[
+			'uses' => 'TableController@adduserajax',
+			'as'  => 'admin.table.adduserajax'
 		]);
 
 	});

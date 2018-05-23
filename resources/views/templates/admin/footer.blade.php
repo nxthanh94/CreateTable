@@ -141,6 +141,24 @@
   }
 </script>
 <script type="text/javascript">
+  function adduser(id_user,id)
+  {
+      var _token = '{{csrf_token()}}';
+      jQuery.ajax({
+      type: 'POST',
+      url: "{{route('admin.table.adduserajax')}}",
+            dataType:'json',
+      data: {id_user:id_user,id:id,_token:_token},      
+      success: function(data) {                   
+          if(data.tb==0)
+                    {
+                        alert('Chưa cập nhập được dữ liệu');
+                    }
+        }
+       });
+  }
+</script>
+<script type="text/javascript">
   $('.check_value').click(function() {
     var id = $(this).val();
     var id_group;
@@ -174,6 +192,17 @@
     var id = $(this).val();
     var id_process =$(this).attr('data');
     change_value_process(id_process,id);
+  });
+</script>
+<script type="text/javascript">
+  $('.adduser').click(function() {
+    var id_user = $(this).val();
+    var id =$(this).attr('data');
+    if(id!='')
+    {
+      adduser(id_user,id);
+    }
+    
   });
 </script>
 </body>

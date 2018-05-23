@@ -27,7 +27,7 @@
 
             <form class="form-horizontal form-label-left" novalidate action="{{ route($action,$value_frm['id']) }}" method="post" enctype="multipart/form-data">
               {{csrf_field()}}
-              <div class="col-md-12 col-sm-12 col-xs-12">
+              <div class="col-md-9 col-sm-9 col-xs-12">
                 <div class="x_panel">
                   <div class="x_title">
                     <div class="item form-group">
@@ -51,7 +51,7 @@
                     </div>
                     <div class="item form-group">
                       <label class="control-label col-md-2 col-sm-2 col-xs-12" for="textarea">Header</label>
-                      <div class="col-md-10 col-sm-10 col-xs-12">
+                      <div class="col-md-12 col-sm-12 col-xs-12">
                         <textarea id="textarea" required="required" name="header" class="form-control col-md-7 col-xs-12">{{$value_frm['header']}}</textarea>
                         <script>
                          CKEDITOR.replace('header');
@@ -60,7 +60,7 @@
                    </div>
                     <div class="item form-group">
                       <label class="control-label col-md-2 col-sm-2 col-xs-12" for="textarea">Footer</label>
-                      <div class="col-md-10 col-sm-10 col-xs-12">
+                      <div class="col-md-12 col-sm-12 col-xs-12">
                         <textarea id="textarea" required="required" name="footer" class="form-control col-md-7 col-xs-12">{{$value_frm['footer']}}</textarea>
                         <script>
                          CKEDITOR.replace('footer');
@@ -70,7 +70,17 @@
                   </div>
                 </div>
               </div>
-              <div class="col-md-12 col-sm-12 col-xs-12">
+              <div class="col-md-3 col-sm-3 col-xs-12">
+                <div class="content-user">
+                  <label class="control-label col-md-12 col-sm-12 col-xs-12" for="user">Thêm User vào bảng</label>
+                  <div class="content-table col-md-12" style="border: 1px solid #ccc; padding: 10px; margin: 10px 0px; max-height: 400px; overflow-y: : autto">
+                      @foreach($user as $item)
+                        <div class="col-md-12 item_table show_{{$item['id_sevice']}}" style="border-bottom: 1px solid #ccc">
+                          <input style="height: 18px; width: 18px; float: left" type="checkbox" value="{{$item['id']}}" name="id_user[]" class="adduser" data="{{$value_frm['id']}}"  @if(array_search($item['id'],$arruser_check)!='') checked="true" @endif><label style="padding: 5px 5px">{{$item['username']}}</label> 
+                        </div>
+                      @endforeach
+                  </div>
+                </div>
                 <div class="x_panel">
                   <div class="x_content">
                     <button type="reset" class="btn btn-dark" >Reset</button>

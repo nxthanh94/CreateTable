@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Session;
 
 class LoginController extends MyController
 {
@@ -25,7 +26,9 @@ class LoginController extends MyController
     	if (Auth::attempt(['username' => $username, 'password' => $password]))
     	{
             
-            	return redirect()->route('public.index');
+            	
+            	return redirect()->route('index');
+
       
 	    }
 	    else
@@ -37,6 +40,6 @@ class LoginController extends MyController
     }
     public function logout(){
 			Auth::logout();
-			return redirect()->route('public.index');
+			return redirect()->route('index');
 	}
 }

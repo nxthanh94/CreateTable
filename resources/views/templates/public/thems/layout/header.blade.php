@@ -5,13 +5,13 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.html"><img src="{{$url_public}}/img/logo.png"/></a>
+                <a class="navbar-brand" href="index.html"><img class="logo-img" src="{{$url_public}}/img/logo.png"/></a>
             </div>
             <!-- /.navbar-header -->
 
             <ul class="nav navbar-top-links navbar-right">
-                <!-- /.dropdown -->
-                <li class="dropdown" style="display:none">
+                @if(Auth::check())
+                <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                         <i class="fa fa-bell fa-fw"></i> <i class="fa fa-caret-down"></i>
                     </a>
@@ -71,14 +71,21 @@
                     <!-- /.dropdown-alerts -->
                 </li>
                 <!-- /.dropdown -->
+                @endif
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                         <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-user">
-                        
-                        <li><a href="{{route('login')}}"><i class="fa fa-sign-out fa-fw"></i> Login</a>
-                        </li>
+                        @if(Auth::check())
+                            <li><a href="#"><i class="fa fa-user fa-fw"></i> {{ Auth::user()->name }} </a>
+                            </li>
+                            <li><a href="{{route('logout')}}"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                            </li> 
+                        @else
+                            <li><a href="{{route('login')}}"><i class="fa fa-sign-in" aria-hidden="true"></i> Login</a>
+                            </li>
+                        @endif
                     </ul>
                     <!-- /.dropdown-user -->
                 </li>

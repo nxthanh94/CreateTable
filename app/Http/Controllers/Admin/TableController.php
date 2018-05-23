@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
 use App\service;
 use App\table;
+use App\user;
+use App\tableasuser;
 
 class TableController extends Controller
 {
@@ -36,11 +38,14 @@ class TableController extends Controller
     }
     public function addtable()
     {
+        $arruser_check = array();
         $data = array(
             'value_frm'=>$this->value_frm,
             'service'=>service::get(),
             'title'=>'Thêm bảng',
             'action'=>'admin.table.posttbale',
+            'user'  => user::select('name','id','username')->where('id_phanquyen','<>',1)->get(),
+            'arruser_check' => $arruser_check,
         );
         return view('admin.table.table_frm',$data);
     }
@@ -86,11 +91,18 @@ class TableController extends Controller
     {
         $value_item = table::find($id);
         $value_service = service::get();
+        $user_check = tableasuser::where('id_table',$id)->get();
+        $arruser_check = array();
+        foreach ($user_check as $item) {
+            $arruser_check['u'.$item['id']] = $item['id_user'];
+        }
         $data = array(
             'title'=>'sữa bảng',
             'value_frm'=>$value_item,
             'service'=>$value_service,
+             'user'  => user::select('name','id','username')->where('id_phanquyen','<>',1)->get(),
             'action'=>'admin.table.edit',
+            'arruser_check' => $arruser_check,
         );
         return view('admin.table.table_frm',$data);
     }
@@ -138,5 +150,24 @@ class TableController extends Controller
         
         $request->session()->flash('msg','Xóa thành công');
         return redirect()->route('admin.table.index');
+    }
+    public function adduserajax(Request $request)
+    {
+        $id = $request->id;
+        $id_user = $request->id_user;
+        $user = tableasuser::where('id_table',$id)->where('id_user',$id_user)->get();
+        if(count($user)==0)
+        {
+            $tableasuser = new tableasuser;
+            $tableasuser->id_user = $id_user;
+            $tableasuser->id_table = $id;
+            $tableasuser->save();
+        }
+        else
+        {
+            $tableasuser = tableasuser::find($user[0]['id']);
+            $tableasuser->delete(); 
+        }
+        echo json_encode('ok');
     }
 }

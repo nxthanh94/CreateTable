@@ -267,6 +267,7 @@ class CollumsController extends Controller
             schema::create($table_name,function($table){
                 $table->Increments('id');
                 $table->Integer('stt');
+                $table->Integer('id_user');
                 foreach ($this->colums_table as $item) {
                     switch ($item['type']) {
                         case 'int':
