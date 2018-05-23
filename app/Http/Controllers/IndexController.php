@@ -4,21 +4,18 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\newspage;
+use App\service;
+use App\newsservice;
 
-class IndexController extends Controller
+class IndexController extends MyController
 {
-	public $template = array (
-		'sidebar'	=>'templates.public.thems.layout.sidebar',
-		'content'	=>'templates.public.index.index'
-	);
+	
     public function index()
     {
+
     	$about = newspage::where('type_news','about')->get();
-    	$data = array(
-    		'template'	=>$this->template,
-    		'title'		=>'Giới thiệu phần mềm Viêt Soft',
-    		'about'		=>$about[0],
-    	);
-    	return  view('templates.public.index',$data);
+    	$this->data['title'] = 'Giới thiệu phần mềm Viêt Soft';
+    	$this->data['about'] = $about[0];
+    	return  view('templates.public.index',$this->data);
     }
 }

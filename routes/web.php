@@ -10,7 +10,8 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+Route::pattern('id','([0-9]*)');
+Route::pattern('slug','(.*)');
 Route::get('/', function () {
     return view('welcome');
 });
@@ -18,6 +19,20 @@ Route::get('',[
 	'uses'	=>'IndexController@index',
 	'as'	=>'index'
 ]);
+Route::get('login',[
+	'uses'	=>'LoginController@index',
+	'as'	=>'login'
+]);
+Route::post('login/checked',[
+	'uses'	=>'LoginController@checklogin',
+	'as'	=>'login.check'
+]);
+Route::group(['prefix' => 'dich-vu'], function () {
+	Route::get('{slug}-{id}',[
+		'uses'	=>'ServiceController@getid',
+		'as'	=>'service.getid'
+	]);
+});
 //////////////////////////////////////////////////////////////////
 //Quản lý admin
 Route::group(['namespace' => 'Admin', 'prefix' => 'admin','middleware' => 'auth','middleware' =>'role'], function () {

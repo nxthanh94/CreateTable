@@ -2,3 +2,25 @@
 {
 	padding: 2px;
 }
+.title_sidebar
+{
+	padding: 5px;
+	font-size: 15px;
+	text-align: center;
+	line-height: 1.3;
+
+}
+.title_sidebar a
+{
+	color:#000;
+}
+.content_frm_login
+{
+	max-width: 400px;
+	text-align: center;
+	margin:20px auto;
+	padding: 50px 20px;
+	background: #f7f7f7;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+}
