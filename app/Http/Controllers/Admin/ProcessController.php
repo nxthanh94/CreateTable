@@ -111,6 +111,7 @@ class ProcessController extends Controller
     	$id = $request->id;
     	$id_process = $request->id_process;
     	$table = process_table::where('id_table',$id)->get();
+    	
     	if(count($table)==0)
     	{
     		$process_table = new process_table;
@@ -120,9 +121,10 @@ class ProcessController extends Controller
     	}
     	else
     	{
-    		$process_table = process_table::find($id);
+    		$item_table = process_table::where('id_table',$id)->get();
+    		$process_table = process_table::find($item_table[0]['id']);
     		$process_table->delete(); 
     	}
-    	echo json_encode('ok');
+    	echo json_encode($id);
     }
 }

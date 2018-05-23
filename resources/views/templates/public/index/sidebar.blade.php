@@ -48,7 +48,18 @@
                             </li>
                             
                             <li>
+                                <?php
+                                    $table = DB::table('process')->get(); 
+                                ?>
                                 <a href="forms.html"><i class="fa fa-edit fa-fw"></i> Quy trình</a>
+                                <ul class="nav nav-second-level">
+                                    @foreach($table as $key => $item)
+                                        <?php 
+                                            $slug = str_slug($item->name);
+                                        ?>
+                                        <li><a href="{{route('process.getid',['slug'=>$slug,'id'=>$item->id])}}">{{ $item->name }}</a></li>
+                                    @endforeach
+                                </ul>
                             </li>
                         @else
                             @foreach($service as $item)
