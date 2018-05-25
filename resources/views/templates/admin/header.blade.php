@@ -40,7 +40,7 @@
         <div class="col-md-3 left_col" id="left_col">
           <div class="left_col scroll-view">
             <div class="navbar nav_title" style="border: 0;">
-              <a href="index.html" class="site_title"><i class="fa fa-paw"></i> <span>QData-Soft</span></a>
+              <a href="" class="site_title"><img src="{{ $url_admin }}/images/logo.png"></a>
             </div>
 
             <div class="clearfix"></div>
@@ -189,7 +189,7 @@
                       </a>
                     </li>
                     <li><a href="javascript:;">Help</a></li>
-                    <li><a href="login.html"><i class="fa fa-sign-out pull-right"></i> Log Out</a></li>
+                    <li><a href="{{ route('public.auth.logout')}}"><i class="fa fa-sign-out pull-right"></i> Log Out</a></li>
                   </ul>
                 </li>
 

@@ -29,7 +29,7 @@ Route::group(['prefix' => 'dich-vu'], function () {
 	]);
 });
 Route::group(['prefix' => 'bang'], function () {
-	Route::get('{slug}-{id}',[
+	Route::get('/nhap-lieu/{slug}-{id}',[
 		'uses'	=>'TableController@getid',
 		'as'	=>'table.getid'
 	]);
@@ -48,6 +48,10 @@ Route::group(['prefix' => 'bang'], function () {
 	Route::post('del-row',[
 		'uses'	=>'TableController@delrow',
 		'as'	=>'table.delrow'
+	]);
+	Route::get('xem-bang/{slug}-{id}',[
+		'uses'	=>'TableController@viewtable',
+		'as'	=>'table.viewtable'
 	]);
 });
 Route::group(['prefix' => 'quy-trinh'], function () {

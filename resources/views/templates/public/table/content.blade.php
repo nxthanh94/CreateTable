@@ -23,10 +23,14 @@
    					<td><input class="checkall checkbox" type="checkbox" name="" value="1"></td>
    					<td><input class="last_stt text_stt" type="text" name="" value="{{$stt}}"></td>
    					<td colspan="{{count($collums)}}">
-   						
-   						<button class="btn btn-secondary copy_row" data="{{$table_info['id']}}">Copy hàng</button>
-   						<button class="btn btn-primary click_addrow" data="{{$table_info['id']}}">Thêm hàng</button>
-   						<button type="button" data="{{$table_info['id']}}" class="btn btn-danger del-rows">Xoá</button>
+   						<?php
+                $id_table = $table_info['id'];
+                $slug_table = str_slug($table_info['name']);
+              ?>
+   						<button class="btn btn-secondary copy_row" data="{{$id_table}}">Copy hàng</button>
+   						<button class="btn btn-primary click_addrow" data="{{$id_table}}">Thêm hàng</button>
+   						<button type="button" data="{{$id_table}}" class="btn btn-danger del-rows">Xoá</button>
+              <a href="{{route('table.viewtable',['slug'=>$slug_table,'id'=>$id_table])}}"  data="{{$id_table}}" class="btn btn-info">Xem bảng</button>
    					</td>
    			</tr>
    		</table>

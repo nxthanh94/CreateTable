@@ -15,11 +15,12 @@ class TableController extends MyController
 		'sidebar'	=>'templates.public.index.sidebar',
 		'content'	=>'templates.public.table.content'
 	);
+
     public function getid($slug,$id)
     {
     	$collums = collums::where('id_table',$id)->get();
     	$table_info = table::find($id);
-    	$table = DB::table($table_info['name_table'])->get();
+    	$table = DB::table($table_info['name_table'])->orderBy('stt','ASC')->get();
         $text_row ="";
         foreach ($table as $key => $item) {
             $ar_row = $this->changearray($item);
@@ -70,7 +71,7 @@ class TableController extends MyController
             
         }
         $return['value'] = $text_row;
-        $return['stt'] =$this->create_stt($table_info['name_table']);
+        $return['stt'] =$this->create_stt($table_info['name_table'])-1;
         echo json_encode($return);
     }
     public function delrow(Request $request)
@@ -233,5 +234,73 @@ class TableController extends MyController
         }
         return $return;
     }
-    
+    public function viewtable($slug, $id)
+    {
+        $this->template = array (
+        'sidebar'   =>'templates.public.index.sidebar',
+        'content'   =>'templates.public.table.viewtable'
+        );
+
+        $table_info = table::find($id);
+        $collums = collums::where('id_table',$id)->get();
+        $value_table = DB::table($table_info['name_table'])->orderBy('stt','ASC')->get();
+        $groupcollums = groupcollums::where('id_table',$id)->get();
+        $header = $table_info['header'];
+        $footer = $table_info['footer'];
+        $style ='';
+        $text_str = '<table class="table table-bordered" style="'.$style.'">';
+        $text_content = '';
+        $text_end = '</table>';
+        $text_content   .= $this->create_header_table_html($collums,$groupcollums);
+        $text_content   .= $this->create_content_table_html($collums,$value_table);
+        $this->data['title'] = $table_info['name'];
+        $this->data['template'] = $this->template;
+        $this->data['table_info'] = $table_info;
+        $this->data['content'] = $header.$text_str.$text_content.$text_end.$footer;
+        return view('templates.public.index',$this->data);
+    }
+    public function create_header_table_html($collums,$groupcollums)
+    {
+        $text_str = '<thead><tr>';
+        $text_content = '';
+        $text_end = '</tr></thead>';
+        if(count($groupcollums)<=0)
+        {
+            $text_content .= '<td>';
+                $text_content .= 'STT';
+                $text_content .= '</td>';
+            foreach ($collums as $item) {
+                $text_content .= '<td>';
+                $text_content .= $item['name'];
+                $text_content .= '</td>';
+            }
+        }
+        return  $text_str.$text_content.$text_end;
+    }
+    public function create_row_table_html ($collums,$value)
+    {
+        $text_str = '<tr>';
+        $text_content = '';
+        $text_end = '</tr>';
+         $text_content .= '<td>';
+                $text_content .= $value['stt'];
+                $text_content .= '</td>';
+        foreach ($collums as $item) {
+            $text_content .= '<td>';
+            $text_content .= $value[$item['label']];
+            $text_content .= '</td>';
+        }
+        return $text_str.$text_content.$text_end;
+    }
+    public function create_content_table_html($collums,$data)
+    {
+        $text_str = '<tbody>';
+        $text_content = '';
+        $text_end = '</tbody>';
+        foreach ($data as $item) {
+            $value = $this->changearray($item);
+            $text_content .= $this->create_row_table_html($collums,$value);
+        }
+        return $text_str.$text_content.$text_end;
+    }
 }
