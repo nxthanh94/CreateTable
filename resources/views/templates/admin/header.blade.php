@@ -72,10 +72,10 @@
                   </li>                
                   <li><a><i class="fa fa-table"></i> Tables <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
-                      <li><a href="{{ route('admin.table.index')}}">Bảng</a></li>
+          
                       <li><a href="{{ route('admin.service.index') }}"> Dịch vụ </a>
                       </li>
-                      <li><a href="{{ route('admin.process.index') }}"> Quy trình </a>
+                      
                       </li>
                       <li><a href="{{ route('admin.newspage.addtype','about') }}"> Giới thiệu </a>
                       </li>

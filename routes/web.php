@@ -103,17 +103,17 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin','middleware' => 'auth'
 
 	//Quản lý process
 	Route::group(['prefix' => 'process'], function () {
-		Route::get('',[
+		Route::get('list/{id_user}',[
 			'uses' => 'ProcessController@index',
 			'as'  => 'admin.process.index'
 		]);
 
-		Route::get('add',[
+		Route::get('add/{id_user}',[
 			'uses' => 'ProcessController@getadd',
 			'as'  => 'admin.process.add'
 		]);
 
-		Route::post('add',[
+		Route::post('add/{id_user}',[
 			'uses' => 'ProcessController@postadd',
 			'as'  => 'admin.process.add'
 		]);
@@ -139,16 +139,16 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin','middleware' => 'auth'
 	});
 	//Quản lý table
 	Route::group(['prefix'=>'table'], function(){
-		Route::get('',[
+		Route::get('list/{id_process}',[
 			'uses'=>'TableController@index',
 			'as'=>'admin.table.index'
 		]);
-		Route::get('add-table',[
+		Route::get('add-table/{id_process}',[
 			'uses'=>'TableController@addtable',
 			'as'=>'admin.table.addtable'
 		]);
 
-		Route::post('add-table',[
+		Route::post('add-table/{id_process}',[
 			'uses'=>'TableController@addtable_value',
 			'as'=>'admin.table.posttbale'
 		]);
@@ -331,11 +331,20 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin','middleware' => 'auth'
 			'uses' => 'UsersController@postedit',
 			'as'  => 'admin.user.edit'
 		]);
+		Route::get('list/{id_service}',[
+			'uses' => 'UsersController@getlist',
+			'as'  => 'admin.user.list'
+		]);
 
 		Route::get('del/{id}',[
 			'uses' => 'UsersController@del',
 			'as' => 'admin.user.del'
 		])->middleware('role1');
+
+		Route::post('addservice',[
+			'uses' => 'UsersController@addservice',
+			'as' => 'admin.user.addservice'
+		]);
 	});
 
 	//Quản lý service

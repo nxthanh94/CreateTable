@@ -112,6 +112,16 @@
                 </div>
               </div>
               <div class="col-md-3 col-sm-12 col-xs-12">
+                <div class="content-service">
+                  <label class="control-label col-md-12 col-sm-12 col-xs-12" for="user">Thêm dịch vụ cho user</label>
+                  <div class="content-table col-md-12" style="border: 1px solid #ccc; padding: 10px; margin: 10px 0px; max-height: 400px; overflow-y: : autto">
+                      @foreach($arService as $item)
+                        <div class="col-md-12 item_service show_{{$item['id']}}" style="border-bottom: 1px solid #ccc">
+                          <input style="height: 18px; width: 18px; float: left" type="checkbox" value="{{$item['id']}}" name="id_service[]" ><label style="padding: 5px 5px">{{$item['name']}}</label> 
+                        </div>
+                      @endforeach
+                  </div>
+                </div>
                 <div class="x_panel" style="margin-bottom: 0px;">
                   <div class="row">
                     <div class="x_title">

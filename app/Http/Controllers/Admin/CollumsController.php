@@ -81,14 +81,14 @@ class CollumsController extends Controller
     	else
     	{
             $name_table = table::where('id',$id_table)->get();
-            $id_sevice = $name_table[0]['id_sevice'];
+            $id_process = $name_table[0]['id_process'];
             if(!Schema::hasTable($name_table[0]['name_table']))
             {
                 for ($i=0 ; $i < count($data_frm['name']) ; $i++) { 
                 $table = new collums;
                 $labe = str_replace("-","_",str_slug($data_frm['name'][$i]));
                 $table->id_table = $id_table;
-                $table->id_sevice = $id_sevice;
+                $table->id_process = $id_process;
                 $table->null = 1;
                 $table->stt = $i+1;
                 $table->name = $data_frm['name'][$i];

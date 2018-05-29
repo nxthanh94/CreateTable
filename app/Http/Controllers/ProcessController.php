@@ -17,9 +17,7 @@ class ProcessController extends MyController
 	{
 		$process = process::find($id);
 
-		$table = process_table::join('table','table.id','=','process_table.id_table')
-                                            ->where('process_table.id_process','=',$process['id'])
-                                            ->select('table.*')->get();
+		$table = table::where('id_process',$id)->get();
 		$this->data['title'] = $process['name'];
 		$this->data['template'] = $this->template;
 		$this->data['process_info'] = $process;

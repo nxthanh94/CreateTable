@@ -11,23 +11,25 @@ use App\service;
 
 class ProcessController extends Controller
 {
-	public function index(){
-		$arItems = process::get();
+	public function index($id_user){
+		$arItems = process::where('id_user',$id_user)->get();
 
 		return view('admin.process.index',[
-			'arItems' => $arItems
+			'arItems' => $arItems,
+			'id_user' =>$id_user
 		]);
 	}
 
-	public function getadd(){
+	public function getadd($id_user){
 		$data  = array(
 			'table' => table::get(), 
 			'service'=> service::get(),
+			'id_user'=>$id_user
 		);
 		return view('admin.process.add',$data);
 	}
 
-	public function postadd(Request $request){
+	public function postadd($id_user,Request $request){
 		$this->validate($request, [
 			'name' => 'required|min:5|max:255',
 			'content' => 'required',
@@ -40,21 +42,14 @@ class ProcessController extends Controller
 		]);
 
 		$arProcess = new process;
-
+		$arProcess->id_user = $id_user;
 		$arProcess->name = $request->name;
 		$arProcess->content = $request->content;
 
 		$arProcess->save();
-		$id_Process = $arProcess->id;
-		$table = $request->id_table;
-		foreach ($table as $value) {
-			$process_table = new process_table;
-			$process_table->id_table =$value;
-			$process_table->id_process = $id_Process;
-			$process_table->save();
-		}
+		
 		$request->session()->flash('msg','Thêm thành công');
-		return redirect()->route('admin.process.index');
+		return redirect()->route('admin.process.index',$id_user);
 	}
 
 	public function getedit($id){
@@ -86,24 +81,22 @@ class ProcessController extends Controller
 		]);
 
 		$arItems = process::find($id);
+		$id_user = $arItems['id_user'];
         $arItems->name = $request->name;
         $arItems->content = $request->content;
         $arItems->update();
 
         $request->session()->flash('msg','Sửa thành công');
-        return redirect()->route('admin.process.index');
+        return redirect()->route('admin.process.index',$id_user);
     }
 
     public function del($id, Request $request){
     	$arItems = process::find($id);
+    	$id_user =$arItems['id_user'];
     	$arItems->delete();
-    	$process_table = process_table::where('id_process',$id)->get();
-    	foreach ($process_table as $value) {
-    		$arProcess_table = process_table::find($value['id']);
-    		$arProcess_table->delete();
-    	}
+    	
     	$request->session()->flash('msg','Xóa thành công');
-    	return redirect()->route('admin.process.index');
+    	return redirect()->route('admin.process.index',$id_user);
 
     }
     public function changevalueajax(Request $request)

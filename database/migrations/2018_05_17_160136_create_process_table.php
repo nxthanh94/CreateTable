@@ -16,6 +16,7 @@ class CreateProcessTable extends Migration
         Schema::create('process', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
+            $table->integer('id_user');
             $table->text('content');
             $table->timestamps();
         });

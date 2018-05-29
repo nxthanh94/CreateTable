@@ -43,9 +43,9 @@
             <table id="datatable" class="table table-striped table-bordered">
               <thead>
                 <tr>
-                  <th>ID</th>
+                  <th  width="40px">ID</th>
                   <th>Name</th>
-                  <th width="100px">Thao tác</th>
+                  <th width="150px">Thao tác</th>
                 </tr>
               </thead>
 
@@ -54,7 +54,8 @@
                 @foreach($arItems as $key => $arItem)
                 <?php
                 $urlEdit = route('admin.service.edit', $arItem['id']);
-                $urlDel  = route('admin.service.del', $arItem['id']); 
+                $urlDel  = route('admin.service.del', $arItem['id']);
+                $urlvewuser  = route('admin.user.list', $arItem['id']);  
                 ?>
                 <tr>
                   <td>{{ $arItem['id'] }}</td>
@@ -65,6 +66,9 @@
                     </a>
                     <a  href="{{ $urlDel }}" class="btn btn-primary btn-xs" onclick="return confirm('Bạn chắc muốn xóa không ?');">
                       <i class="fa fa-trash-o"> Xóa</i>
+                    </a>
+                    <a  href="{{ $urlvewuser }}" class="btn btn-primary btn-xs" on>
+                      <i class="fa fa-users"> Users</i>
                     </a>
                   </td>
                 </tr>

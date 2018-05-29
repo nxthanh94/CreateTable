@@ -28,7 +28,7 @@
       <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="x_panel">
           <div class="x_title">
-            <a href="{{ route('admin.table.addtable',$id_process) }}" class="btn btn-primary">Thêm</a>
+            <a href="{{ route('admin.user.add') }}" class="btn btn-primary">Thêm</a>
             
             <ul class="nav navbar-right panel_toolbox">
               <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
@@ -43,7 +43,10 @@
               <thead>
                 <tr>
                   <th width="30px">ID</th>
+                  <th>User Name</th>
                   <th>Name</th>
+                  <th>Email</th>
+                  <th>Phone</th>
                   <th width="150px">Thao tác</th>
                 </tr>
               </thead>
@@ -52,24 +55,22 @@
               <tbody>
                 @foreach($arItems as $key => $arItem)
                 <?php
-                $urlEdit = route('admin.table.edit', $arItem['id']);
-                $urlDel  = route('admin.table.del', $arItem['id']); 
-                $urlMCollums = route('admin.collums.index', $arItem['id']);
-                $slug = str_slug($arItem['name']);
-                $urlAddvalue = route('table.getid',['slug'=>$slug,'id'=>$arItem['id']]);
+                $urlEdit = route('admin.user.edit', $arItem['id']);
+                $urlDel  = route('admin.user.del', $arItem['id']); 
+                $urlprocess = route('admin.process.index', $arItem['id']);
                 ?>
                 <tr>
                   <td>{{ $arItem['id'] }}</td>
+                   <td>{{ $arItem['username'] }}</td>
                   <td>{{ $arItem['name'] }}</td>
+                   <td>{{ $arItem['email'] }}</td>
+                    <td>{{ $arItem['phone'] }}</td>
                   <td>
-                    <a class="btn btn-success btn-xs" href="{{ $urlMCollums }}">
-                      <i class="glyphicon glyphicon-th-list"></i> Cột
+                    <a class="btn btn-success btn-xs" href="{{ $urlprocess }}">
+                      <i class="fa fa-file-text-o""></i> Q.Trình
                     </a>
                     <a class="btn btn-success btn-xs" href="{{ $urlEdit }}">
                       <i class="fa fa-pencil"></i> Sửa
-                    </a>
-                    <a class="btn btn-success btn-xs" target="_blank" href="{{ $urlAddvalue }}">
-                      <i class="fa fa-table"></i> Xem
                     </a>
                     <a  href="{{ $urlDel }}" class="btn btn-primary btn-xs" onclick="return confirm('Bạn chắc muốn xóa không ?');">
                       <i class="fa fa-trash-o"> Xóa</i>

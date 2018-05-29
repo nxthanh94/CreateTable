@@ -6,7 +6,7 @@
   <div class="">
     <div class="page-title">
       <div class="title_left">
-        <h3>Quá trình</h3>
+        <h3>Quy trình</h3>
       </div>
 
     </div>
@@ -28,7 +28,7 @@
       <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="x_panel">
           <div class="x_title">
-            <a href="{{ route('admin.process.add') }}" class="btn btn-primary">Thêm</a>
+            <a href="{{ route('admin.process.add',$id_user) }}" class="btn btn-primary">Thêm</a>
             <ul class="nav navbar-right panel_toolbox">
               <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
               </li>
@@ -53,6 +53,9 @@
                 <?php
                 $urlEdit = route('admin.process.edit', $arItem['id']);
                 $urlDel  = route('admin.process.del', $arItem['id']); 
+                $urlTable  = route('admin.table.index', $arItem['id']); 
+                $slug = str_slug($arItem['name']);
+                $urlView  = route('process.getid',['slug'=>$slug,'id'=>$arItem['id']]); 
                 ?>
                 <tr>
                   <td>{{ $arItem['id'] }}</td>
@@ -63,6 +66,12 @@
                     </a>
                     <a  href="{{ $urlDel }}" class="btn btn-primary btn-xs" onclick="return confirm('Bạn chắc muốn xóa không ?');">
                       <i class="fa fa-trash-o"> Xóa</i>
+                    </a>
+                    <a class="btn btn-success btn-xs" href="{{ $urlTable }}">
+                      <i class="fa fa-pencil"></i> Bảng
+                    </a>
+                    <a class="btn btn-success btn-xs" href="{{  $urlView }}">
+                      <i class="fa fa-pencil"></i> Xem
                     </a>
                   </td>
                 </tr>

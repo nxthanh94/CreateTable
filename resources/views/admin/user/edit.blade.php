@@ -53,7 +53,7 @@
                   <div class="item form-group">
                     <label class="control-label col-md-2 col-sm-2 col-xs-12">Username</label>
                     <div class="col-md-10 col-sm-10 col-xs-12">
-                      <input id="name" class="form-control col-md-7 col-xs-12" name="username" placeholder="Vui lòng nhập thông tin" required="required" type="text" maxlength="255" value="{!! $username !!}">
+                      <input class="form-control col-md-7 col-xs-12" name="username" placeholder="Vui lòng nhập thông tin" required="required" type="text" maxlength="255" value="{!! $username !!}">
                       @if ($errors->Has ('username'))
                       <p style="color:red;margin-bottom: 0px;display: inline-block;margin-top: 5px;"> {!!  $errors->First ('username') !!} </p>
                       @endif
@@ -80,7 +80,7 @@
                   <div class="item form-group">
                     <label class="control-label col-md-2 col-sm-2 col-xs-12">Email</label>
                     <div class="col-md-10 col-sm-10 col-xs-12">
-                      <input id="name" class="form-control col-md-7 col-xs-12" name="email" placeholder="Vui lòng nhập thông tin" required="required" type="email" maxlength="255" value="{!! $email !!}">
+                      <input  class="form-control col-md-7 col-xs-12" name="email" placeholder="Vui lòng nhập thông tin" required="required" type="email" maxlength="255" value="{!! $email !!}">
                       @if ($errors->Has ('email'))
                       <p style="color:red;margin-bottom: 0px;display: inline-block;margin-top: 5px;"> {!!  $errors->First ('email') !!} </p>
                       @endif
@@ -98,7 +98,7 @@
                   <div class="item form-group">
                     <label class="control-label col-md-2 col-sm-2 col-xs-12">Địa chỉ</label>
                     <div class="col-md-10 col-sm-10 col-xs-12">
-                      <input id="name" class="form-control col-md-7 col-xs-12" name="diachi" placeholder="Vui lòng nhập thông tin" required="required" type="text" maxlength="255" value="{!! $diachi !!}">
+                      <input  class="form-control col-md-7 col-xs-12" name="diachi" placeholder="Vui lòng nhập thông tin" required="required" type="text" maxlength="255" value="{!! $diachi !!}">
                       @if ($errors->Has ('diachi'))
                       <p style="color:red;margin-bottom: 0px;display: inline-block;margin-top: 5px;"> {!!  $errors->First ('diachi') !!} </p>
                       @endif
@@ -125,6 +125,17 @@
               </div>
             </div>
             <div class="col-md-3 col-sm-12 col-xs-12">
+              <div class="content-service">
+                  <label class="control-label col-md-12 col-sm-12 col-xs-12" for="user">Thêm dịch vụ cho user</label>
+                  <div class="content-table col-md-12" style="border: 1px solid #ccc; padding: 10px; margin: 10px 0px; max-height: 400px; overflow-y: : autto">
+                      
+                      @foreach($arservice as $item)
+                        <div class="col-md-12 item_service show_{{$item['id']}}" style="border-bottom: 1px solid #ccc">
+                          <input style="height: 18px; width: 18px; float: left" type="checkbox" value="{{$item['id']}}" name="id_service[]" @if(array_search($item['id'],$arservice_check)!='') checked="checked"  @endif data ="{{$id}}" class="addservice"><label style="padding: 5px 5px">{{$item['name']}}</label> 
+                        </div>
+                      @endforeach
+                  </div>
+                </div>
               <div class="x_panel" style="margin-bottom: 0px;">
                 <div class="row">
                   <div class="x_title">

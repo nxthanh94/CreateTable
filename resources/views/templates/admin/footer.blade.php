@@ -159,6 +159,24 @@
   }
 </script>
 <script type="text/javascript">
+  function addservice(id,id_service)
+  {
+      var _token = '{{csrf_token()}}';
+      jQuery.ajax({
+      type: 'POST',
+      url: "{{route('admin.user.addservice')}}",
+            dataType:'json',
+      data: {id_service:id_service,id:id,_token:_token},      
+      success: function(data) {                   
+          if(data.tb==0)
+                    {
+                        alert('Chưa cập nhập được dữ liệu');
+                    }
+        }
+       });
+  }
+</script>
+<script type="text/javascript">
   $('.check_value').click(function() {
     var id = $(this).val();
     var id_group;
@@ -201,6 +219,17 @@
     if(id!='')
     {
       adduser(id_user,id);
+    }
+    
+  });
+</script>
+<script type="text/javascript">
+  $('.addservice').click(function() {
+    var id_service = $(this).val();
+    var id =$(this).attr('data');
+    if(id!='')
+    {
+      addservice(id,id_service);
     }
     
   });

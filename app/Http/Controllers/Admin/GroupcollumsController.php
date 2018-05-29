@@ -76,7 +76,24 @@ class GroupcollumsController extends Controller
     	$table = groupcollums::find($id);
     	$table->name = $data_frm['name'];
     	$table->update();
-    	$request->session()->flash('msg','Group đã chưa được tạo');
+    	$request->session()->flash('msg','Group đã được sửa');
         return redirect()->route('admin.groupcollums.index',$collums[0]['id_table']);
+    }
+    public function del($id, Request $request)
+    {
+        $groupcollums = groupcollums::find($id);
+        $id_table = $groupcollums['id_table'];
+        $groupcollums->delete();
+        $collums_item = collums::where('id_group',$id)->get();
+        if(count($collums_item)>0)
+        {
+            foreach ($collums_item as $item) {
+                $collums = collums::find($item['id']);
+                $collums->id_group = null;
+                $collums->update();
+            }
+        }
+        $request->session()->flash('msg','Group đã được xoá');
+        return redirect()->route('admin.groupcollums.index',$id_table);
     }
 }

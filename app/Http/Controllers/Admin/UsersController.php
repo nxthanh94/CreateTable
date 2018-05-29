@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\User;
 use App\phanquyen;
+use App\service;
+use App\serviceuser;
 use Illuminate\Support\Facades\DB;
 use Image;
 
@@ -22,8 +24,10 @@ class UsersController extends Controller
 
     public function getadd(){
         $arPhanquyen = phanquyen::all();
+        $arService = service::all();
         return view('admin.user.add',[
             'arPhanquyen' => $arPhanquyen,
+            'arService' =>$arService
         ]);
     }
 
@@ -65,7 +69,7 @@ class UsersController extends Controller
             'picture.mimes' => 'Định dạng sai, bạn nên up jpg,png,jpeg,gif,svg',
             'picture.max' => 'Bạn chỉ được phép up ảnh tối đa 2M',
         ]);
-
+        
         $arUsers = new User;
 
         $picName = $request->picture;
@@ -89,6 +93,28 @@ class UsersController extends Controller
         $arUsers->picture = $picName;
 
         $arUsers->save();
+        $id_user = $arUsers->id;
+        $id_service = $request->id_service;
+        if($request->phanquyen == 1 || $request->phanquyen==2)
+        {
+            $service = service::all();
+            foreach ($service as $item) {
+                $serviceuser = new serviceuser;
+                $serviceuser->id_user = $id_user;
+                $serviceuser->id_service = $item['id'];
+                $serviceuser->save();
+            }
+        }
+        else
+        {
+            foreach ($id_service as $item) {
+                $serviceuser = new serviceuser;
+                $serviceuser->id_user = $id_user;
+                $serviceuser->id_service = $item;
+                $serviceuser->save();
+            }
+        }
+        
         $request->session()->flash('msg','Thêm thành công');
         return redirect()->route('admin.user.index');
     }
@@ -96,8 +122,15 @@ class UsersController extends Controller
     public function getEdit($id, Request $request){
 
         $arUsers = User::find($id);
+        $arService = service::all();
+        //var_dump($arService);exit();
         $arPhanquyen = phanquyen::all();
         $arItems = User::all();
+        $service_check = serviceuser::where('id_user',$id)->get();
+        $arservice_check =array();
+        foreach ($service_check as $value) {
+            $arservice_check['srv'.$value['id']] = $value['id_service'];
+        }       
         if((Auth::user()->id != 1) && ($id == 1 || $arUsers['id_phanquyen'] == 2 && (Auth::user()->id != $id))){
             $request->session()->flash('msg','Bạn không được sửa thành viên này');
             return redirect()->route('admin.users.index');
@@ -105,6 +138,8 @@ class UsersController extends Controller
             return view('admin.user.edit',[
                 'arUsers' => $arUsers,
                 'arPhanquyen' => $arPhanquyen,
+                'arservice' =>$arService,
+                'arservice_check' =>$arservice_check,
             ]);
         }
 
@@ -191,17 +226,48 @@ class UsersController extends Controller
             Storage::delete("files/avata/{$picNameOld}");
         }
         $arUsers->delete();
+        $arService_user =serviceuser::where('id_user',$id)->get();
+        foreach ($arService_user as $item) {
+            $serviceuser = serviceuser::find($item['id']);
+            $serviceuser ->delete();
+        }
         $request->session()->flash('msg','Xóa thành công');
         return redirect()->route('admin.user.index');
-    }else{
-        $request->session()->flash('msg','Không thể xóa tài khoản này');
-        return redirect()->route('admin.user.index');
+        }else{
+            $request->session()->flash('msg','Không thể xóa tài khoản này');
+            return redirect()->route('admin.user.index');
+        }
+    }
+    public function addservice(Request $request)
+    {
+        $id = $request->id;
+        $id_service = $request->id_service;
+        $user = serviceuser::where('id_user',$id)->where('id_service',$id_service)->get();
+        if(count($user)==0)
+        {
+            $serviceuser = new serviceuser;
+            $serviceuser->id_user = $id;
+            $serviceuser->id_service = $id_service;
+            $serviceuser->save();
+        }
+        else
+        {
+            $serviceuser = serviceuser::find($user[0]['id']);
+            $serviceuser->delete(); 
+        }
+        echo json_encode(count($user));
+    }
+    public function getlist($id_service)
+    {
+         $arItems = User::join('serviceuser','users.id','=','serviceuser.id_user')->where('users.id_phanquyen','=',3)->where('serviceuser.id_service','=',$id_service)->select('users.*')->get();
+        $data = array(
+             'arItems'  => $arItems,
+             'title'    => 'User dịch vụ'
+        );
+       
+        return view('admin.user.list',$data);
     }
 
-
-
-
-}
 
 
 }

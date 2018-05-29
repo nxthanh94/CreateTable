@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTableProcesstable extends Migration
+class CreateTableServiceuser extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateTableProcesstable extends Migration
      */
     public function up()
     {
-         Schema::create('process_table', function (Blueprint $table) {
+        Schema::create('serviceuser', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('id_table');
-            $table->integer('id_process');
+            $table->integer('id_user');
+            $table->integer('id_service');
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ class CreateTableProcesstable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('process_table');
+        Schema::dropIfExists('serviceuser');
     }
 }
