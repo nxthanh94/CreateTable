@@ -7,6 +7,8 @@ use App\service;
 use App\table;
 use App\collums;
 use App\groupcollums;
+use Excel;
+use PDF;
 use Illuminate\Support\Facades\DB;
 
 class TableController extends MyController
@@ -18,8 +20,7 @@ class TableController extends MyController
 
     public function getid($slug,$id)
     {
-    	$collums = collums::where('id_table',$id)->get();
-    	$table_info = table::find($id);
+    	$collums = collums::where('id_table',$id)->orderBy('stt','ASC')->get(); $table_info = table::find($id);
     	$table = DB::table($table_info['name_table'])->orderBy('stt','ASC')->get();
         $text_row ="";
         foreach ($table as $key => $item) {
@@ -39,7 +40,7 @@ class TableController extends MyController
     	$id = $request->name_table;
     	$id_user = $request->id_user;
     	$table_info = table::find($id);
-    	$collums = collums::where('id_table',$table_info['id'])->get();
+    	$collums = collums::where('id_table',$table_info['id'])->orderBy('stt','ASC')->get();
     	$data_df = $this->create_value_df($collums);
     	$data_df['id_user'] = $id;
     	$data_df['stt'] = $this->create_stt($table_info['name_table']);
@@ -58,7 +59,7 @@ class TableController extends MyController
         $id = $request->id_table;
         $stt = $request->stt;
         $table_info = table::find($id);
-        $collums = collums::where('id_table',$id)->get();
+        $collums = collums::where('id_table',$id)->orderBy('stt','ASC')->get();
         $rowcopy =  DB::table($table_info['name_table'])->where('stt','=',$stt)->get();
         $text_row ="";
         foreach ($rowcopy as $key => $item) {
@@ -242,7 +243,7 @@ class TableController extends MyController
         );
 
         $table_info = table::find($id);
-        $collums = collums::where('id_table',$id)->get();
+        $collums = collums::where('id_table',$id)->orderBy('stt','ASC')->get();
         $value_table = DB::table($table_info['name_table'])->orderBy('stt','ASC')->get();
         $groupcollums = groupcollums::where('id_table',$id)->get();
         $header = $table_info['header'];
@@ -261,21 +262,70 @@ class TableController extends MyController
     }
     public function create_header_table_html($collums,$groupcollums)
     {
-        $text_str = '<thead><tr>';
-        $text_content = '';
-        $text_end = '</tr></thead>';
+       $return ="";
         if(count($groupcollums)<=0)
         {
+            $text_str = '<thead>';
+            $text_content = '';
+            $text_end = '</thead>';
             $text_content .= '<td>';
-                $text_content .= 'STT';
-                $text_content .= '</td>';
+            $text_content .= 'STT';
+            $text_content .= '</td>';
             foreach ($collums as $item) {
                 $text_content .= '<td>';
                 $text_content .= $item['name'];
                 $text_content .= '</td>';
             }
+            $return = $text_str.$text_content.$text_end;
         }
-        return  $text_str.$text_content.$text_end;
+        else
+        {
+            $text_str = '<thead style="font-weight: bold">';
+            $text_content = '';
+            $text_end = '</thead>';
+            $text_content_str ='<tr align="center">';
+            $text_content_end ='</tr >';
+            $text_content .= '<td rowspan="2">';
+            $text_content .= 'STT';
+            $text_content .= '</td>';
+            //row 2
+            $text_content_str2 ='<tr>';
+            $text_content_end2 ='</tr>';
+            $text_content2 = '';
+            for ($i =0; $i<count($collums); $i++) {
+               if($collums[$i]['id_group']>0)
+               {
+                    $item_groupcollums = groupcollums::find($collums[$i]['id_group']);
+                    if(count($item_groupcollums)>0)
+                    {
+                        $collums_group = collums::where('id_group',$item_groupcollums['id'])->get();
+                        $text_content .= '<td align="center" colspan="'.count($collums_group).'">';
+                        $text_content .=  $item_groupcollums['name'];
+                        $text_content .= '</td>';
+                        foreach ($collums_group as  $value) {
+                            $text_content2 .= '<td>';
+                            $text_content2 .= $value['name'];
+                            $text_content2 .= '</td>';
+                        }
+                        $i = $i + count($collums_group) -1;
+                    }
+                    else
+                    {
+                        $text_content .= '<td align="center" rowspan="2">';
+                        $text_content .= $collums[$i]['name'];
+                        $text_content .= '</td>';
+                    }
+               }
+               else
+               {
+                    $text_content .= '<td align="center" rowspan="2">';
+                    $text_content .= $collums[$i]['name'];
+                    $text_content .= '</td>';
+               }
+               $return = $text_str.$text_content_str.$text_content.$text_content_end.$text_content_str2.$text_content2.$text_content_end2.$text_end;
+            }
+        }
+        return  $return;
     }
     public function create_row_table_html ($collums,$value)
     {
@@ -302,5 +352,52 @@ class TableController extends MyController
             $text_content .= $this->create_row_table_html($collums,$value);
         }
         return $text_str.$text_content.$text_end;
+    }
+    public function exportexcel($slug,$id)
+    {
+        $table_info = table::find($id);
+        $table = DB::table($table_info['name_table'])->take(7)->get();
+        $table_value = array();
+        foreach ($table as $value) {
+            $table_value[] = $this->changearray($value);
+        }      
+        Excel::create($table_info['name_table'], function($excel) use ($table_value){
+        $excel->sheet('sheet 1', function($sheet) use ($table_value)
+            {
+                $sheet->fromArray($table_value);
+            });
+        })->download('xlsx');
+    }
+    public function exportpdf($slug,$id)
+    {
+        $this->template = array (
+        'sidebar'   =>'templates.public.index.sidebar',
+        'content'   =>'templates.public.table.viewtable'
+        );
+
+        $table_info = table::find($id);
+        $collums = collums::where('id_table',$id)->get();
+        $value_table = DB::table($table_info['name_table'])->orderBy('stt','ASC')->get();
+        $groupcollums = groupcollums::where('id_table',$id)->get();
+        $header = $table_info['header'];
+        $footer = $table_info['footer'];
+        $style ='';
+        $text_str = '<table class="table table-bordered" style="'.$style.'">';
+        $text_content = '';
+        $text_end = '</table>';
+        $text_content   .= $this->create_header_table_html($collums,$groupcollums);
+        $text_content   .= $this->create_content_table_html($collums,$value_table);
+        $this->data['title'] = $table_info['name'];
+        $this->data['template'] = $this->template;
+        $this->data['table_info'] = $table_info;
+        $this->data['content'] = $header.$text_str.$text_content.$text_end.$footer;
+
+        //view()->share('templates.public.index',$this->data);
+        PDF::setOptions(['dpi' => 150, 'defaultFont' => 'arial','encoding'=>'utf-8']);
+        // pass view file
+        //echo $this->data['content'];exit();
+        $pdf = PDF::loadView('templates.public.table.viewpdf',$this->data);
+        // download pdf
+        return $pdf->download($table_info['name_table'].'.pdf');
     }
 }

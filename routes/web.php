@@ -53,6 +53,14 @@ Route::group(['prefix' => 'bang'], function () {
 		'uses'	=>'TableController@viewtable',
 		'as'	=>'table.viewtable'
 	]);
+	Route::get('export/{slug}-{id}',[
+		'uses'	=>'TableController@exportexcel',
+		'as'	=>'table.exportexcel'
+	]);
+	Route::get('tao-pdf/{slug}-{id}',[
+		'uses'	=>'TableController@exportpdf',
+		'as'	=>'table.exportpdf'
+	]);
 });
 Route::group(['prefix' => 'quy-trinh'], function () {
 	Route::get('{slug}-{id}',[

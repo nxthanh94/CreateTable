@@ -5,7 +5,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.html"><img class="logo-img" src="{{$url_public}}/img/logo.png"/></a>
+                <a class="navbar-brand" href="{{route('index')}}"><img class="logo-img" src="{{$url_public}}/img/logo.png"/></a>
             </div>
             <!-- /.navbar-header -->
 

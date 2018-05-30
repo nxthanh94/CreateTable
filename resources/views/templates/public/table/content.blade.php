@@ -30,7 +30,9 @@
    						<button class="btn btn-secondary copy_row" data="{{$id_table}}">Copy hàng</button>
    						<button class="btn btn-primary click_addrow" data="{{$id_table}}">Thêm hàng</button>
    						<button type="button" data="{{$id_table}}" class="btn btn-danger del-rows">Xoá</button>
-              <a href="{{route('table.viewtable',['slug'=>$slug_table,'id'=>$id_table])}}"  data="{{$id_table}}" class="btn btn-info">Xem bảng</button>
+              <a href="{{route('table.viewtable',['slug'=>$slug_table,'id'=>$id_table])}}"  data="{{$id_table}}" class="btn btn-info">Xem bảng</a>
+              <a href="{{route('table.exportexcel',['slug'=>$slug_table,'id'=>$id_table])}}"  data="{{$id_table}}" class="btn btn-info">Export</a>
+              
    					</td>
    			</tr>
    		</table>

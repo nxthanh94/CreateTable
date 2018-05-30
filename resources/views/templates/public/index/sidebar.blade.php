@@ -29,8 +29,8 @@
                                 else
                                 {
                                     $table = DB::table('table')
-                                            ->join('tableasuser','table.id','=','tableasuser.id_table')
-                                            ->where('tableasuser.id_user','=',$id_user)
+                                            ->join('process','table.id_process','=','process.id')
+                                            ->where('process.id_user','=',$id_user)
                                             ->select('table.*')->get();
                                 }
                                 
@@ -49,7 +49,15 @@
                             
                             <li>
                                 <?php
+                                if($id_phanquyen == 1 || $id_phanquyen ==2)
+                                {
                                     $table = DB::table('process')->get(); 
+                                }
+                                else
+                                {
+                                   $table = DB::table('process')->where('id_user',$id_user)->get(); 
+                                }
+                                    
                                 ?>
                                 <a href="forms.html"><i class="fa fa-edit fa-fw"></i> Quy trình</a>
                                 <ul class="nav nav-second-level">
@@ -83,3 +91,4 @@
                 </div>
                 <!-- /.sidebar-collapse -->
             </div>
+            

@@ -97,7 +97,7 @@ class CollumsController extends Controller
                 $table->save();
                 }
                 
-                $colums = collums::where('id_table',$id_table)->get();
+                $colums = collums::where('id_table',$id_table)->orderBy('stt','ASC')->get()->orderBy;
                 $this->create_table_user($colums,$name_table[0]['name_table']);
                 $request->session()->flash('msg','Thêm cột thành công');
                 return redirect()->route('admin.collums.index',$id_table);
