@@ -8,7 +8,9 @@
 			@yield('sidebar')
 		</nav>
 		<div id="page-wrapper">
+			<div class="content-wrapper">
 			@yield('main')	
+			</div>
 		</div>
 	</div>	
 	@include('templates.public.thems.layout.footer')

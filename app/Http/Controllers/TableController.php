@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 use App\service;
 use App\table;
 use App\collums;
@@ -20,20 +22,28 @@ class TableController extends MyController
 
     public function getid($slug,$id)
     {
-    	$collums = collums::where('id_table',$id)->orderBy('stt','ASC')->get(); $table_info = table::find($id);
-    	$table = DB::table($table_info['name_table'])->orderBy('stt','ASC')->get();
-        $text_row ="";
-        foreach ($table as $key => $item) {
-            $ar_row = $this->changearray($item);
-            $text_row .= $this->create_row($table_info['name_table'],$collums,$ar_row);
+    	$collums = collums::where('id_table',$id)->orderBy('stt','ASC')->get();$table_info = table::find($id);
+        if(Schema::hasTable($table_info['name_table']))
+        {
+            $table = DB::table($table_info['name_table'])->orderBy('stt','ASC')->get();
+            $text_row ="";
+            foreach ($table as $key => $item) {
+                $ar_row = $this->changearray($item);
+                $text_row .= $this->create_row($table_info['name_table'],$collums,$ar_row);
+            }
+            $this->data['title'] = $table_info['name'];
+            $this->data['collums'] = $collums;
+            $this->data['rows'] = $text_row;
+            $this->data['template'] = $this->template;
+            $this->data['table_info'] = $table_info;
+            $this->data['stt'] = $this->create_stt($table_info['name_table']) - 1;
+            return view('templates.public.index',$this->data);
         }
-    	$this->data['title'] = $table_info['name'];
-    	$this->data['collums'] = $collums;
-    	$this->data['rows'] = $text_row;
-    	$this->data['template'] = $this->template;
-    	$this->data['table_info'] = $table_info;
-        $this->data['stt'] = $this->create_stt($table_info['name_table']) - 1;
-    	return view('templates.public.index',$this->data);
+        else
+        {
+            echo 'Bảng chưa được tạo hoàn chỉnh! vui lòng về lại <a href="'.route('index').'">trang chủ</a>';
+        }
+    	
     }
     public function addrow(Request $request)
     {
@@ -376,13 +386,13 @@ class TableController extends MyController
         );
 
         $table_info = table::find($id);
-        $collums = collums::where('id_table',$id)->get();
+        $collums = collums::where('id_table',$id)->orderBy('stt','ASC')->get();
         $value_table = DB::table($table_info['name_table'])->orderBy('stt','ASC')->get();
         $groupcollums = groupcollums::where('id_table',$id)->get();
         $header = $table_info['header'];
         $footer = $table_info['footer'];
-        $style ='';
-        $text_str = '<table class="table table-bordered" style="'.$style.'">';
+        $style ='width:100%';
+        $text_str = '<table class="table table-bordered" border="1" style="'.$style.'">';
         $text_content = '';
         $text_end = '</table>';
         $text_content   .= $this->create_header_table_html($collums,$groupcollums);
@@ -393,7 +403,7 @@ class TableController extends MyController
         $this->data['content'] = $header.$text_str.$text_content.$text_end.$footer;
 
         //view()->share('templates.public.index',$this->data);
-        PDF::setOptions(['dpi' => 150, 'defaultFont' => 'arial','encoding'=>'utf-8']);
+        PDF::setOptions(['dpi' => 150, 'defaultFont' => 'Times-New-Roman']);
         // pass view file
         //echo $this->data['content'];exit();
         $pdf = PDF::loadView('templates.public.table.viewpdf',$this->data);

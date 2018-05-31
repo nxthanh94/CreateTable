@@ -6,10 +6,22 @@
 	<meta http-equiv="Content-Script-Type" content="text/javascript" />
 	<meta name="Keywords" content="" />
 	<meta name="Description" content="" />
+	<link href="{{ $url_public }}/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 	<title>{{$title}}</title>
-
+	<style type="text/css">
+		@font-face {
+		    font-family: Times-New-Roman;
+		    src: url("{{ asset('fonts/times.ttf') }}");
+		    font-weight: normal;
+		}
+		@font-face {
+            font-family: Times-New-Roman;
+            src: url("{{ asset('fonts/timesbd.ttf') }}");
+            font-weight: bold;
+        }
+	</style>
 </head>
-<body style="font-family:'arial', 'Times New Roman', serif;">
+<body style="font-family:Times-New-Roman!important;">
 	<article>
 		{!!$content!!}
 	</article>

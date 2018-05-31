@@ -28,7 +28,7 @@ Route::group(['prefix' => 'dich-vu'], function () {
 		'as'	=>'service.getid'
 	]);
 });
-Route::group(['prefix' => 'bang'], function () {
+Route::group(['prefix' => 'bang', 'middleware'=>'auth'], function () {
 	Route::get('/nhap-lieu/{slug}-{id}',[
 		'uses'	=>'TableController@getid',
 		'as'	=>'table.getid'

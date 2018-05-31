@@ -32,6 +32,7 @@
    						<button type="button" data="{{$id_table}}" class="btn btn-danger del-rows">Xoá</button>
               <a href="{{route('table.viewtable',['slug'=>$slug_table,'id'=>$id_table])}}"  data="{{$id_table}}" class="btn btn-info">Xem bảng</a>
               <a href="{{route('table.exportexcel',['slug'=>$slug_table,'id'=>$id_table])}}"  data="{{$id_table}}" class="btn btn-info">Export</a>
+              <a href="{{route('table.exportpdf',['slug'=>$slug_table,'id'=>$id_table])}}"  data="{{$id_table}}" class="btn btn-info">Exprot pdf</a>
               
    					</td>
    			</tr>

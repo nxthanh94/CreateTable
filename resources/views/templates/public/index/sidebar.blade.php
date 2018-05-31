@@ -1,20 +1,8 @@
  <div class="navbar-default sidebar" role="navigation">
+                <div class="header-left"><h3 class="title_sidebar"><a href="#">CHỌN DỊCH VỤ ĐANG ÁP DỤNG</a></h3></div>
                 <div class="sidebar-nav navbar-collapse">
                     <ul class="nav" id="side-menu">
-                        <li class="sidebar-search">
-                            <div class="input-group custom-search-form">
-                                <input type="text" class="form-control" placeholder="Search...">
-                                <span class="input-group-btn">
-                                <button class="btn btn-default" type="button">
-                                    <i class="fa fa-search"></i>
-                                </button>
-                            </span>
-                            </div>
-                            <!-- /input-group -->
-                        </li>
-                        <li>
-                            <h3 class="title_sidebar"><a href="#">CHỌN DỊCH VỤ ĐANG ÁP DỤNG</a></h3>
-                        </li>
+
                         <?php
                             $id_user =0;
                         ?>
@@ -51,19 +39,20 @@
                                 <?php
                                 if($id_phanquyen == 1 || $id_phanquyen ==2)
                                 {
-                                    $table = DB::table('process')->get(); 
+                                    $process = DB::table('process')->get(); 
                                 }
                                 else
                                 {
-                                   $table = DB::table('process')->where('id_user',$id_user)->get(); 
+                                   $process = DB::table('process')->where('id_user',$id_user)->get(); 
                                 }
                                     
                                 ?>
                                 <a href="forms.html"><i class="fa fa-edit fa-fw"></i> Quy trình</a>
                                 <ul class="nav nav-second-level">
-                                    @foreach($table as $key => $item)
+                                    @foreach($process as $key => $item)
                                         <?php 
                                             $slug = str_slug($item->name);
+                                            $id_user_process = $item->id_user;
                                         ?>
                                         <li><a href="{{route('process.getid',['slug'=>$slug,'id'=>$item->id])}}">{{ $item->name }}</a></li>
                                     @endforeach

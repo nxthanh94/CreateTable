@@ -51,6 +51,7 @@ class CollumsController extends Controller
     }
     public function addget($id_table)
     {
+        $table_info = table::find($id_table);
     	$data = array(
     		'value_frm'	=>$this->value_frm,
     		'action' 	=>'admin.collums.add',
@@ -58,7 +59,15 @@ class CollumsController extends Controller
     		'title' 	=>'Thêm cột',
     		'type' 		=>$this->type,
     	);
-    	return view('admin.collums.collums_frm',$data);
+        if(!Schema::hasTable($table_info['name_table']))
+        {
+            return view('admin.collums.collums_frm',$data);
+        }
+        else
+        {
+            return redirect()->route('admin.collums.addcollums',$table_info['id']);
+        }
+    	
     }
     public function addpost($id_table,Request $request)
     {
@@ -97,7 +106,7 @@ class CollumsController extends Controller
                 $table->save();
                 }
                 
-                $colums = collums::where('id_table',$id_table)->orderBy('stt','ASC')->get()->orderBy;
+                $colums = collums::where('id_table',$id_table)->orderBy('stt','ASC')->get();
                 $this->create_table_user($colums,$name_table[0]['name_table']);
                 $request->session()->flash('msg','Thêm cột thành công');
                 return redirect()->route('admin.collums.index',$id_table);
@@ -105,7 +114,7 @@ class CollumsController extends Controller
             else
             {
                 $request->session()->flash('msg','Bảng đã được tạo');
-                return redirect()->route('admin.table.index');
+                return redirect()->route('admin.collums.index',$id_table);
             }
     	}
 
@@ -143,7 +152,7 @@ class CollumsController extends Controller
         else
         {
             $name_table = table::where('id',$id_table)->get();
-            $id_sevice = $name_table[0]['id_sevice'];
+            $id_process = $name_table[0]['id_process'];
             $errors ="";
             if(Schema::hasTable($name_table[0]['name_table']))
             {
@@ -154,7 +163,7 @@ class CollumsController extends Controller
                     {
                         $table = new collums;
                         $table->id_table = $id_table;
-                        $table->id_sevice = $id_sevice;
+                        $table->id_process = $id_process;
                         $table->null = 1;
                         $table->stt = $i+1;
                         $table->name = $data_frm['name'][$i];
