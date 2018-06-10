@@ -7,24 +7,29 @@
 <div class="row">
     <div class="col-lg-12">
         <section class="content_frm_login">
-        	<p>Vui lòng nhập thông tin đăng nhập!</p>
+        	<p>Vui lòng nhập email đăng nhập!</p>
         	<form name="frm_login" method="post" class="form-horizontal form-label-left" action="{{route($action)}}">
         		{{ csrf_field() }}
         		<div class="item form-group">
                       <div class="col-md-12 col-sm-12 col-xs-12">
-                        <input id="user" class="form-control col-md-12 col-xs-12" data-validate-length-range="6" data-validate-words="2" name="username" placeholder="Nhập user" required="required" type="text">
+                        <input id="user" class="form-control col-md-12 col-xs-12" data-validate-length-range="6" data-validate-words="2" name="email" placeholder="Nhập email" required="required" type="text">
                       </div>
+                      @if ($errors->Has ('email'))
+                           <p style="color:red;margin-bottom: 0px;display: inline-block;margin-top: 5px;"> {!!  $errors->First ('email') !!} </p>
+                      @endif
                 </div>
                 <div class="item form-group">
                       <div class="col-md-12 col-sm-12 col-xs-12">
-                        <input id="user" class="form-control col-md-12 col-xs-12" data-validate-length-range="6" data-validate-words="2" name="password"  required="required" type="password">
+                        <input id="user" class="form-control col-md-12 col-xs-12" data-validate-length-range="6" data-validate-words="2" name="email_com" placeholder="Nhập lại email" required="required" type="text">
                       </div>
+                      @if ($errors->Has ('email_com'))
+                           <p style="color:red;margin-bottom: 0px;display: inline-block;margin-top: 5px;"> {!!  $errors->First ('email_com') !!} </p>
+                        @endif
                 </div>
                 <div class="form-group">
                   <div class="col-md-12 col-sm-12">
-                    <button id="send" type="submit" class="btn btn-success">Login</button>
+                    <button id="send" type="submit" class="btn btn-success">Reset Password</button>
                     <button type="reset" class="btn btn-primary">Cancel</button>
-                    <a href="{{route('login.forgot')}}" class="btn btn-warning">Quên mật khẩu</a>
                   </div>
                 </div>
                 @if(Session::get('msg') != "")

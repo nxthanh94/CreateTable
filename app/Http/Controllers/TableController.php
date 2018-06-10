@@ -90,7 +90,7 @@ class TableController extends MyController
         $id = $request->id;
         $id_table =$request->id_table;
         $return = '';
-        if(count($id)>1)
+        if(count($id)>0)
         {
              $table_info = table::find($id_table);
             foreach ($id as $value) {

@@ -5,7 +5,7 @@
 	<div id="wrapper">
 		<nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
 			@include('templates.public.thems.layout.header')
-			@yield('sidebar')
+			@include('templates.public.index.sidebar')
 		</nav>
 		<div id="page-wrapper">
 			<div class="content-wrapper">

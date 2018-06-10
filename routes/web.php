@@ -22,6 +22,14 @@ Route::post('login/checked',[
 	'uses'	=>'LoginController@checklogin',
 	'as'	=>'login.check'
 ]);
+Route::get('login/forgot-password',[
+	'uses'	=>'LoginController@forgotpassword',
+	'as'	=>'login.forgot'
+]);
+Route::post('login/reset-password',[
+	'uses'	=>'LoginController@resetpassword',
+	'as'	=>'login.reset'
+]);
 Route::group(['prefix' => 'dich-vu'], function () {
 	Route::get('{slug}-{id}',[
 		'uses'	=>'ServiceController@getid',

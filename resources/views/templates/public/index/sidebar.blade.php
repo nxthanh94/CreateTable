@@ -1,5 +1,11 @@
  <div class="navbar-default sidebar" role="navigation">
-                <div class="header-left"><h3 class="title_sidebar"><a href="#">CHỌN DỊCH VỤ ĐANG ÁP DỤNG</a></h3></div>
+                <div class="header-left"><h3 class="title_sidebar"><a href="#">
+                @if(Auth::check())
+                CHỌN XEM QUY TRÌNH HOẶC NHẬP LIỆU
+                @else
+                CHỌN DỊCH VỤ ĐANG ÁP DỤNG
+                @endif
+                </a></h3></div>
                 <div class="sidebar-nav navbar-collapse">
                     <ul class="nav" id="side-menu">
 
@@ -24,18 +30,6 @@
                                 
                             ?>
                             <li>
-                                <a href="#"><i class="fa fa-table fa-fw"></i> Bảng</a>
-                                <ul class="nav nav-second-level">
-                                    @foreach($table as $key => $item)
-                                        <?php 
-                                            $slug = str_slug($item->name);
-                                        ?>
-                                        <li><a href="{{route('table.getid',['slug'=>$slug,'id'=>$item->id])}}">{{ $item->name }}</a></li>
-                                    @endforeach
-                                </ul>
-                            </li>
-                            
-                            <li>
                                 <?php
                                 if($id_phanquyen == 1 || $id_phanquyen ==2)
                                 {
@@ -58,6 +52,19 @@
                                     @endforeach
                                 </ul>
                             </li>
+                            <li>
+                                <a href="#"><i class="fa fa-table fa-fw"></i> Bảng</a>
+                                <ul class="nav nav-second-level">
+                                    @foreach($table as $key => $item)
+                                        <?php 
+                                            $slug = str_slug($item->name);
+                                        ?>
+                                        <li><a href="{{route('table.getid',['slug'=>$slug,'id'=>$item->id])}}">{{ $item->name }}</a></li>
+                                    @endforeach
+                                </ul>
+                            </li>
+                            
+                            
                         @else
                             @foreach($service as $item)
                             <li>
