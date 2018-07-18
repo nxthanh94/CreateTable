@@ -13,6 +13,8 @@
 
     <!-- Custom Theme JavaScript -->
     <script src="{{ $url_public }}/dist/js/sb-admin-2.js"></script>
+    <script src="{{ $url_public }}/dist/js/jquery.qrcode.js"></script>
+    <script src="{{ $url_public }}/dist/js/qrcode.js"></script>
     <?php
         $id_user =0;
         if(Auth::check())
@@ -140,6 +142,56 @@
                     }
                 });
             
+        });
+    });
+</script>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('.qrcode-rows').click(function() {
+            var ar_id = new  Array();
+            var token = '{{csrf_token()}}';
+            var id_table = $(this).attr('data');
+            $i = 0;
+            jQuery('.checkbox_item').each(function () {
+                if(jQuery(this).is(':checked'))
+                {
+                    ar_id[$i] = $(this).val();
+                    $i = $i+1;
+                }
+            });
+
+            if(ar_id.length === 0 )
+            {
+                alert('Bạn chưa chọn row tạo QrCode!');
+            }
+            else
+            {
+                jQuery.ajax({
+                    type: 'POST',
+                    url: "{{route('table.qrcode')}}",
+                    dataType:'json',
+                    data: {id_table:id_table,id:ar_id,_token:token},           
+                    success: function(data) 
+                    {                                       
+                        if(data.tb=='ok')
+                        {
+                            $('.content-qrcode').html(data.img_qrcode);
+                            $('#qrcode_png').modal({
+                                show: 'true'
+                            }); 
+                        }
+                        else
+                        {
+                            alert(data.tb);
+                        }
+                    }
+                 });
+            }  
+        });
+
+        $(document).on('click','.save_img', function(){
+            //var fs = require('fs');
+            var img = $('.content-qrcode img').attr('src');
         });
     });
 </script>

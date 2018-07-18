@@ -22,8 +22,8 @@
                 </div>
                 <div class="form-group">
                   <div class="col-md-12 col-sm-12">
-                    <button id="send" type="submit" class="btn btn-success">Login</button>
-                    <button type="reset" class="btn btn-primary">Cancel</button>
+                    <button id="send" type="submit" class="btn btn-success">Đăng nhập</button>
+                    <button type="reset" class="btn btn-primary">Huỷ bỏ</button>
                     <a href="{{route('login.forgot')}}" class="btn btn-warning">Quên mật khẩu</a>
                   </div>
                 </div>

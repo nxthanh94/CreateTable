@@ -14,6 +14,7 @@ class LoginController extends MyController
 		'sidebar'	=>'templates.public.index.sidebar',
 		'content'	=>'templates.public.login.index'
 	);
+	public $email_to ="minhnhutc2@gmail.com";
     public function index()
     {
     	$this->data['title'] = 'Đăng nhập vào hệ thống';
@@ -73,17 +74,101 @@ class LoginController extends MyController
 		if(count($user)==1)
 		{
 			$newpassword ='123456';
-			$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 		   	$newpassword = rand(0, 999999);
+		   	$this->email_to = $user[0]["email"];
 			Mail::send('templates.public.login.resetpw', array('name'=>$user[0]["name"],'email'=>$user[0]["email"], 'content'=>$newpassword), function($message){
-		        $message->to('plachym.it@gmail.com', 'Reset password')->subject('New password!');
+		        $message->to($this->email_to, 'Reset password')->subject('New password!');
 		    });
-			$request->session()->flash('msg','Vui lòng kiểm tra email để nhận lại mật khẩu');
+			$user_rspw = User::find($user[0]["id"]) ;
+			$user_rspw->password = bcrypt(trim($newpassword));
+			$user_rspw->update();
+			$request->session()->flash('msg','Vui lòng kiểm tra email để nhận lại mật khẩu ');
 		}
 		else
 		{
 			 $request->session()->flash('msg','Email không tồn tại');
 		}
 		return redirect()->route('login.forgot');
+	}
+	public function profile($id_user)
+	{
+		
+		$this->template = array (
+		'sidebar'	=>'templates.public.index.sidebar',
+		'content'	=>'templates.public.login.profile'
+		);
+		$this->data['title'] = 'Hồ sơ cá nhân';
+    	$this->data['template'] = $this->template;
+    	$this->data['action'] = 'profile';
+    	$this->data['arUsers'] = User::find($id_user);
+    	
+    	return view('templates.public.index',$this->data);
+	}
+	public function editprofile($id_user,Request $request)
+	{
+		$this->validate($request, [
+            'name' => 'required|min:5|max:255',
+            'username' => 'required|min:5|max:255',
+            'email' => 'required|email',
+            'password' => 'max:100',
+            'password2' => 'same:password',
+            'phone' => 'required|min:10|numeric',
+            'diachi' => 'required|max:255',
+            
+            'picture' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
+        ],
+        [
+            'name.required' => 'Không được để trống',
+            'name.min' => 'Chiều dài danh mục từ 5-255 ký tự',
+            'name.max' => 'Chiều dài danh mục từ 5-255 ký tự',
+            'username.required' => 'Không được để trống',
+            'username.min' => 'Chiều dài danh mục từ 5-255 ký tự',
+            'username.max' => 'Chiều dài danh mục từ 5-255 ký tự',
+            'email.required' => 'Không được để trống',
+            'email.email' => 'Định dạng sai',
+            'password.max' => 'Chiều dài danh mục từ 5-100 ký tự',
+            'password2.same' => 'Mật khẩu không trùng khớp',
+            'phone.required' => 'Không được để trống',
+            'phone.min' => 'Chiều dài tối thiểu 10 ký tự',
+            'phone.numeric' => 'Thông tin phải là số',
+            'diachi.required' => 'Không được để trống',
+            'diachi.max' => 'Chiều dài danh mục tối đa 255 ký tự',
+            'picture.image' => 'Bạn chỉ được phép up hình ảnh',
+            'picture.mimes' => 'Định dạng sai, bạn nên up jpg,png,jpeg,gif,svg',
+            'picture.max' => 'Bạn chỉ được phép up ảnh tối đa 2M',
+        ]);
+        $arUsers = User::find($id_user);
+
+        $picNameOld = $arUsers['picture'];
+        $picNameNew = $request->picture;
+        if($picNameNew != ''){
+            $image = $request->file('picture');
+            $filename  = time() . '.' . $image->getClientOriginalExtension();
+            $path = storage_path('app/files/avata/' . $filename);
+            Image::make($image->getRealPath())->resize(100, 100)->save($path);
+            $tmp = explode('/',$filename);
+            $picName = end($tmp);
+
+            if($picNameOld != ''){
+                Storage::delete("files/avata/{$picNameOld}");
+            }
+        }else{
+            $picName = $picNameOld;
+        }
+
+        $arUsers->name     = $request->name; 
+        if(trim($request->password) != '')
+        {
+            $arUsers->password = bcrypt(trim($request->password)) ;
+        }
+        $arUsers->username = $request->username;
+        $arUsers->name = $request->name;
+        $arUsers->email = $request->email;
+        $arUsers->phone = $request->phone;
+        $arUsers->diachi = $request->diachi;
+        $arUsers->picture = $picName;
+
+        $arUsers->update();
+        return redirect()->route('index');
 	}
 }

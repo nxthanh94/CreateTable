@@ -90,6 +90,7 @@ class UsersController extends Controller
         $arUsers->phone = $request->phone;
         $arUsers->diachi = $request->diachi;
         $arUsers->id_phanquyen = $request->phanquyen;
+        $arUsers->content = $request->content;
         $arUsers->picture = $picName;
 
         $arUsers->save();
@@ -210,6 +211,7 @@ class UsersController extends Controller
         $arUsers->phone = $request->phone;
         $arUsers->diachi = $request->diachi;
         $arUsers->id_phanquyen = $request->phanquyen;
+        $arUsers->content = $request->content;
         $arUsers->picture = $picName;
 
         $arUsers->update();

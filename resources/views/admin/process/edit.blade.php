@@ -56,7 +56,7 @@
                            <p style="color:red;margin-bottom: 0px;display: inline-block;margin-top: 5px;"> {!!  $errors->First ('content') !!} </p>
                         @endif
                      </div>
-                   </div>
+                    </div>
                   </div>
                 </div>
               </div>

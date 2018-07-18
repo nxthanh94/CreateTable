@@ -1,4 +1,4 @@
-/**
+	/**
  * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or http://ckeditor.com/license
  */
@@ -8,6 +8,12 @@
 	// config.language = 'vi';
 	// config.uiColor = '#AADC6E';
 	// config.extraPlugins = 'lineutils, dialogui, dialog, widget, image2';
+	//CKEDITOR.plugins.addExternal('youtube', '../node_modules/ckeditor-youtube-plugin/youtube/');
+	config.extraPlugins = 'youtube';
+	config.toolbar_Basic =
+	[
+		['Bold', 'Italic', '-', 'NumberedList', 'BulletedList', '-', 'Link', 'Unlink','-','About']
+	];
 	config.filebrowserBrowseUrl = baseURL+'/resources/assets/templates/admin/js/ckfinder/ckfinder.html';
 	config.filebrowserImageBrowseUrl = baseURL+'/resources/assets/templates/admin/js/ckfinder/ckfinder.html?Type=Images';
 	config.filebrowserFlashBrowseUrl = baseURL+'/resources/assets/templates/admin/js/ckfinder/ckfinder.html?Type=Flash';

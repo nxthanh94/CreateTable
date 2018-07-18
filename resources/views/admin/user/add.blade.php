@@ -108,6 +108,18 @@
                         @endif
                       </div>
                     </div>
+                    <div class="item form-group">
+                      <label class="control-label col-md-2 col-sm-2 col-xs-12" for="textarea">Detail</label>
+                      <div class="col-md-12 col-sm-12 col-xs-12">
+                        <textarea id="textarea" required="required" name="content" class="form-control col-md-7 col-xs-12"></textarea>
+                        <script>
+                         CKEDITOR.replace('content');
+                       </script>
+                       @if ($errors->Has ('content'))
+                           <p style="color:red;margin-bottom: 0px;display: inline-block;margin-top: 5px;"> {!!  $errors->First ('content') !!} </p>
+                        @endif
+                     </div>
+                    </div>
                   </div>
                 </div>
               </div>

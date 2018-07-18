@@ -20,3 +20,9 @@
         </article>
     </div> 
 </div>
+<div class="row">
+    <div class="col-lg-12 padding">
+        <a class="" href="{{ $create_pdf }}">Xuất PDF</a>
+    </div>
+    <!-- /.col-lg-12 -->
+</div>

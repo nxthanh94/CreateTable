@@ -1,28 +1,11 @@
-@extends('templates.admin.template')
-
-@section('main')
-<!-- page content -->
 <div class="right_col" role="main">
   <div class="">
-    <div class="page-title">
-      <div class="title_left">
-        <h3>User</h3>
-      </div>
-
-    </div>
-    <div class="clearfix"></div>
-
     <div class="row">
       <div class="col-md-12">
-        <div class="x_panel">
+        <div class="">
           <div class="x_title">
-            <h2>Sửa</h2>
-            <ul class="nav navbar-right panel_toolbox">
-              <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-              </li>
-              <li><a class="close-link"><i class="fa fa-close"></i></a>
-              </li>
-            </ul>
+            <h2>Thông tin cá nhân</h2>
+    
             <div class="clearfix"></div>
           </div>
           <div class="x_content">
@@ -36,7 +19,7 @@
            $picture = $arUsers['picture'];
            $picUrl     = asset("storage/app/files/avata/{$picture}");
            ?>
-           <form class="form-horizontal form-label-left" novalidate action="{{ route('admin.user.edit',$id) }}" method="POST" enctype="multipart/form-data">
+           <form class="form-horizontal form-label-left" novalidate action="{{ route($action,$id) }}" method="POST" enctype="multipart/form-data">
             {{ csrf_field() }}
             <div class="col-md-9 col-sm-12 col-xs-12">
               <div class="x_panel">
@@ -105,79 +88,27 @@
                     </div>
                   </div>
                   <div class="item form-group">
-                    <label class="control-label col-md-2 col-sm-2 col-xs-12">Cấp</label>
-                    <div class="col-md-10 col-sm-10 col-xs-12">
-                      <select class="form-control" name="phanquyen" required="">
-                        @foreach($arPhanquyen as $key => $Phanquyen)
-                        @if($Phanquyen['id'] == $arUsers['id_phanquyen'])
-                        <option selected="selected" value="{{ $Phanquyen['id'] }}">{{ $Phanquyen['name'] }}</option>
-                        @else
-                        <option value="{{ $Phanquyen['id'] }}">{{ $Phanquyen['name'] }}</option>
-                        @endif
-                        @endforeach
-                      </select>
-                      @if ($errors->Has ('phanquyen'))
-                      <p style="color:red;margin-bottom: 0px;display: inline-block;margin-top: 5px;"> {!!  $errors->First ('phanquyen') !!} </p>
-                      @endif
-                    </div>
-                  </div>
-                  <div class="item form-group">
-                      <label class="control-label col-md-12 col-sm-12 col-xs-12" for="textarea">Detail</label>
-                      <div class="col-md-12 col-sm-12 col-xs-12">
-                        <textarea id="textarea" required="required" name="content" class="form-control col-md-7 col-xs-12">{!! $arUsers['content'] !!}</textarea>
-                        <script>
-                         CKEDITOR.replace('content');
-                       </script>
-                       @if ($errors->Has ('content'))
-                           <p style="color:red;margin-bottom: 0px;display: inline-block;margin-top: 5px;"> {!!  $errors->First ('content') !!} </p>
-                        @endif
-                     </div>
-                    </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-3 col-sm-12 col-xs-12">
-              <div class="content-service">
-                  <label class="control-label col-md-12 col-sm-12 col-xs-12" for="user">Thêm dịch vụ cho user</label>
-                  <div class="content-table col-md-12" style="border: 1px solid #ccc; padding: 10px; margin: 10px 0px; max-height: 400px; overflow-y: : autto">
                       
-                      @foreach($arservice as $item)
-                        <div class="col-md-12 item_service show_{{$item['id']}}" style="border-bottom: 1px solid #ccc">
-                          <input style="height: 18px; width: 18px; float: left" type="checkbox" value="{{$item['id']}}" name="id_service[]" @if(array_search($item['id'],$arservice_check)!='') checked="checked"  @endif data ="{{$id}}" class="addservice"><label style="padding: 5px 5px">{{$item['name']}}</label> 
-                        </div>
-                      @endforeach
-                  </div>
-                </div>
-              <div class="x_panel" style="margin-bottom: 0px;">
-                <div class="row">
-                  <div class="x_title">
-                    <h2 style="font-size: 14px;font-weight: bold;">Hình ảnh</h2>
-                    <ul class="nav navbar-right panel_toolbox">
-                      <li style="float: right;"><a class="collapse-link"><i class="fa fa-caret-down" aria-hidden="true"></i></a>
-                      </li>
-                    </ul>
-                    <div class="clearfix"></div>
-                  </div>
-                  <div class="x_content">
-                    <div class="item form-group">
-                      <div class="col-md-12 col-sm-12 col-xs-12">
+                          <label class="control-label col-md-2 col-sm-12 col-xs-12">Avatar</label>
+                        
+                     
+                      <div class="col-md-10 col-sm-12 col-xs-12">
                         <input type="file" name="picture">
                         @if ($errors->Has ('picture'))
                         <p style="color:red;margin-bottom: 0px;display: inline-block;margin-top: 5px;"> {!!  $errors->First ('picture') !!} </p>
                         @endif
+                        <img src="{{ $picUrl }}" width="99px" />
                       </div>
-                      <div class="col-md-12 col-sm-12 col-xs-12">
-                          <label>Avatar</label>
-                          <img src="{{ $picUrl }}" width="99px" />
-                        </div>
+                      
+                    </div>
+                    <div class="item form-group">
+                      <label class="control-label col-md-2 col-sm-2 col-xs-12"></label>
+                        <div class="col-md-10 col-sm-12 col-xs-12">
+                        <button type="reset" class="btn btn-dark">Nhập lại</button>
+                        <button id="send" type="submit" class="btn btn-success" >Cập nhật</button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
-              <div class="x_panel" style="padding: 5px 5px 0px 5px;background: #E6E9ED;">
-                <div class="x_content">
-                  <button type="reset" class="btn btn-dark" style="float: left;">Reset</button>
-                  <button id="send" type="submit" class="btn btn-dark" style="float: right;">Cập nhật</button>
                 </div>
               </div>
             </div>
@@ -189,4 +120,3 @@
 </div>
 </div>
 <!-- /page content -->
-@endsection

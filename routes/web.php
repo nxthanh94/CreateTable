@@ -18,6 +18,14 @@ Route::get('logout',[
 	'uses'	=>'LoginController@logout',
 	'as'	=>'logout'
 ]);
+Route::get('user/{id_user}',[
+	'uses'	=>'LoginController@profile',
+	'as'	=>'profile'
+]);
+Route::post('user/{id_user}',[
+	'uses'	=>'LoginController@editprofile',
+	'as'	=>'profile'
+]);
 Route::post('login/checked',[
 	'uses'	=>'LoginController@checklogin',
 	'as'	=>'login.check'
@@ -37,6 +45,12 @@ Route::group(['prefix' => 'dich-vu'], function () {
 	]);
 });
 Route::group(['prefix' => 'bang', 'middleware'=>'auth'], function () {
+
+	Route::post('/qrcode',[
+		'uses'	=>'TableController@create_qrcode',
+		'as'	=>'table.qrcode'
+	]);
+	
 	Route::get('/nhap-lieu/{slug}-{id}',[
 		'uses'	=>'TableController@getid',
 		'as'	=>'table.getid'
@@ -74,6 +88,10 @@ Route::group(['prefix' => 'quy-trinh'], function () {
 	Route::get('{slug}-{id}',[
 		'uses'	=>'ProcessController@getid',
 		'as'	=>'process.getid'
+	]);
+	Route::get('xuat-pdf/{id}',[
+		'uses'	=>'ProcessController@exportPdf',
+		'as'	=>'process.export-ddf'
 	]);
 });
 //////////////////////////////////////////////////////////////////

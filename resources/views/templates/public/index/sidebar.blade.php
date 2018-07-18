@@ -68,17 +68,19 @@
                         @else
                             @foreach($service as $item)
                             <li>
-                                <a href="#">{{$item['service_cat']['name']}}<span class="fa arrow"></span></a>
+                                <a href="{{ route('login') }}">{{$item['service_cat']['name']}}<span class="fa arrow"></span></a>
+                                @if(count($item['newsservice'])>0)
                                 <ul class="nav nav-second-level">
                                     @foreach($item['newsservice'] as $value)
                                     <li>
                                         <?php
                                             $slug = str_slug($value['name']);
                                         ?>
-                                        <a href="{{route('service.getid',['slug'=>$slug,'id'=>$value['id']])}}">{{$value['name']}}</a>
+                                        <a href="{{ route('login') }}">{{$value['name']}}</a>
                                     </li>
                                     @endforeach
                                 </ul>
+                                @endif
                                 <!-- /.nav-second-level -->
                             </li>
                             @endforeach

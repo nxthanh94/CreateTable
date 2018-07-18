@@ -235,7 +235,37 @@
   });
 </script>
 <!-- Load Facebook SDK for JavaScript -->
+<script type="text/javascript">
+  $('.ck_editor').parent('.formRight').css({width:'100%','margin-top':'30px','float':'none'});
+  $('.ck_editor').each(function(index, el) {
+    var id=$(this).attr('id');
+    CKEDITOR.replace( id, {
+    height : 400,
+    entities: false,
+        basicEntities: false,
+        entities_greek: false,
+        entities_latin: false,
+    skin:'office2013',
+    filebrowserBrowseUrl : '../assets/templates/admin/js/ckfinder/ckfinder.html',
+    filebrowserImageBrowseUrl : '../assets/templates/admin/js/ckfinder/ckfinder.html?type=Images',
+    filebrowserFlashBrowseUrl : '../assets/templates/admin/js/ckfinder/ckfinder.html?type=Flash',
+    filebrowserUploadUrl : '../assets/templates/admin/js/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files',
+    filebrowserImageUploadUrl : '../assets/templates/admin/js/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Images',
+    filebrowserFlashUploadUrl : '../assets/templates/admin/js/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Flash',
+    allowedContent:
+      'h1 h2 h3 p blockquote strong em;' +
+      'a[!href];' +
+      'img(left,right)[!src,alt,width,height];' +
+      'table tr th td caption;' +
+      'span{!font-family};' +
+      'span{!color};' +
+      'span(!marker);' +
+      'del ins'
+    });
 
+  });
+  
+</script>
 
 </body>
 </html>

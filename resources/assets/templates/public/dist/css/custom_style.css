@@ -110,3 +110,9 @@
 	background: #fff;
 	margin-top: 135px;
 }
+.bnt-login
+{
+	background: #f7f7f7;
+	border-radius: 5px;
+	min-height: 30px!important;
+}

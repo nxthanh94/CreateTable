@@ -11,6 +11,7 @@ use App\collums;
 use App\groupcollums;
 use Excel;
 use PDF;
+use QrCode;
 use Illuminate\Support\Facades\DB;
 
 class TableController extends MyController
@@ -19,6 +20,12 @@ class TableController extends MyController
 		'sidebar'	=>'templates.public.index.sidebar',
 		'content'	=>'templates.public.table.content'
 	);
+
+    public function qrcode()
+    {
+        $png = QRCode::format('png')->size(512)->generate(1);
+        $png = base64_encode($png);
+    }
 
     public function getid($slug,$id)
     {
@@ -369,8 +376,10 @@ class TableController extends MyController
         $table = DB::table($table_info['name_table'])->take(7)->get();
         $table_value = array();
         foreach ($table as $value) {
+            unset($value->id);
+            unset($value->id_user);
             $table_value[] = $this->changearray($value);
-        }      
+        }  
         Excel::create($table_info['name_table'], function($excel) use ($table_value){
         $excel->sheet('sheet 1', function($sheet) use ($table_value)
             {
@@ -401,13 +410,40 @@ class TableController extends MyController
         $this->data['template'] = $this->template;
         $this->data['table_info'] = $table_info;
         $this->data['content'] = $header.$text_str.$text_content.$text_end.$footer;
-
-        //view()->share('templates.public.index',$this->data);
         PDF::setOptions(['dpi' => 150, 'defaultFont' => 'Times-New-Roman']);
-        // pass view file
-        //echo $this->data['content'];exit();
         $pdf = PDF::loadView('templates.public.table.viewpdf',$this->data);
-        // download pdf
         return $pdf->download($table_info['name_table'].'.pdf');
+    }
+
+    public function create_qrcode(Request $request)
+    {
+        if($request->ajax())
+        {
+            $table_info = table::find($request->id_table);
+            $collums = collums::where('id_table',$request->id_table)->orderBy('stt','ASC')->get();
+            $text_qrcode ="";
+            foreach ($request->id as $key => $value) 
+            {
+                 $row = DB::table($table_info['name_table'])->where('id',$value)->get();
+                 $row = (array) $row[0];
+                 $text_qrcode .= $this->create_text_qrcode($collums, $row);
+                 $text_qrcode .="-------------------%0D%0A";
+            }
+        }
+
+        $img_qrcode = '<img src="data:image/png;base64,'.base64_encode(QrCode::encoding('UTF-8')->format('png')->size(200)->generate(urldecode ($text_qrcode))).'">';
+        $data = ['img_qrcode' =>$img_qrcode , 'tb' =>'ok'];
+        return json_encode($data);
+    }
+
+    public function create_text_qrcode ($collums,$value)
+    {
+        $text_content = "";
+        foreach ($collums as $item) {
+            $text_content .= mb_strtoupper($item['name'], "UTF-8").': ';
+            $text_content .= $value[$item['label']];
+            $text_content .= '%0D%0A';
+        }
+        return $text_content;
     }
 }
