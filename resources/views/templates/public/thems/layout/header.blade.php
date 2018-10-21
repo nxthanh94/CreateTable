@@ -21,6 +21,9 @@
                         @if(Auth::check())
                             <li><a href="{{route('profile',Auth::user()->id)}}"><i class="fa fa-user fa-fw"></i> {{ Auth::user()->name }} </a>
                             </li>
+                            @if ($id_phanquyen = Auth::user()->id_phanquyen == 1 || $id_phanquyen = Auth::user()->id_phanquyen == 2)
+                                <li><a href="{{route('admin.index.index')}}"><i class="fa fa-cog" aria-hidden="true"></i> Quản trị hệ thống</a>
+                            @endif
                             <li><a href="{{route('logout')}}"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
                             </li> 
                         @else

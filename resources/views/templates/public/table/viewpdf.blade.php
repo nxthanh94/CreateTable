@@ -19,10 +19,23 @@
             src: url("{{ asset('fonts/timesbd.ttf') }}");
             font-weight: bold;
         }
+		td, th {
+			padding: 5px 10px;
+		}
+		th {
+			text-align: center;
+		}
+		.title {
+			padding: 5px: 0px;
+			border-bottom: 1px solid #000;
+			width: 100%;
+			margin-bottom: 30px;
+		}
 	</style>
 </head>
 <body style="font-family:Times-New-Roman!important;">
-	<article>
+	<h3 class="title">{{ $table_info['name'] }}</h3>
+	<article style="margin-top:30px">
 		{!!$content!!}
 	</article>
 </body>

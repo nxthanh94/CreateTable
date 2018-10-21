@@ -21,6 +21,7 @@ class CollumsController extends Controller
 		'value'=>null,
 		'id_table'=>null,
 		'id_sevice' =>null,
+        'ex_qrcode' => 0
 	);
 	public $type = array(
 		'int'=>'Số nguyên ',
@@ -102,6 +103,7 @@ class CollumsController extends Controller
                 $table->stt = $i+1;
                 $table->name = $data_frm['name'][$i];
                 $table->type = $data_frm['type'][$i];
+                $table->ex_qrcode = $data_frm['ex_qrcode'][$i];
                 $table->label =$labe;
                 $table->save();
                 }
@@ -168,6 +170,7 @@ class CollumsController extends Controller
                         $table->stt = $i+1;
                         $table->name = $data_frm['name'][$i];
                         $table->type = $data_frm['type'][$i];
+                        $table->ex_qrcode = $data_frm['ex_qrcode'][$i];
                         $table->label =$labe;
                         $table->save();
                         $this->boot();
@@ -379,11 +382,11 @@ class CollumsController extends Controller
     }
     public function postedit($id, Request $request)
     {
-        
         $value_old = collums::where('id',$id)->get();
         $table =  collums::find($id);
         $table->name= $request->name;
         $table->type= $request->type;
+        $table->ex_qrcode = $request->ex_qrcode;
         $table->label = str_replace("-","_",str_slug($request->name));
         $table->update();
         $collums = collums::where('id',$id)->get();

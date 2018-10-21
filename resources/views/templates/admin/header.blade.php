@@ -21,16 +21,27 @@
     <link href="{{ $url_admin }}/vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
     <link href="{{ $url_admin }}/vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css" rel="stylesheet">
     <link href="{{ $url_admin }}/vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css" rel="stylesheet">
+    <link href="{{ $url_admin }}/build/css/select2.css" rel="stylesheet">
+    <link href="{{ $url_admin }}/build/css/custom.css" rel="stylesheet">
     
     <link href="{{ $url_admin }}/vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css" rel="stylesheet">
     <link href="{{ $url_admin }}/vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css" rel="stylesheet">
+
 
     <!-- Custom Theme Style -->
     <link href="{{ $url_admin }}/build/css/custom.min.css" rel="stylesheet">
     <script type="text/javascript" src="{{ $url_admin }}/js/ckeditor/ckeditor.js"></script>
     <script type="text/javascript" src="{{ $url_admin }}/js/ckfinder/ckfinder.js"></script>
+    <link href="{{ $url_admin }}/build/js/select2.js" rel="stylesheet">
     <script type="text/javascript">
         var baseURL = "{!! url('/') !!}";
+    </script>
+    <script>
+
+        $(document).ready(function () {
+            $("#e12").select2({tags:["red", "green", "blue"]});
+        });
+
     </script>
   </head>
 
@@ -70,7 +81,7 @@
                       <li><a href="{{ route('admin.level.index') }}">Level</a></li>
                     </ul>
                   </li>                
-                  <li><a><i class="fa fa-table"></i> Tables <span class="fa fa-chevron-down"></span></a>
+                  <li><a><i class="fa fa-table"></i> Kỹ thuật <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
           
                       <li><a href="{{ route('admin.service.index') }}"> Dịch vụ </a>
@@ -95,8 +106,8 @@
                   </li>
                   <li><a><i class="fa fa-envelope-o"></i>Thông báo <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
-                      <li><a href="fixed_sidebar.html">Fixed Sidebar</a></li>
-                      <li><a href="fixed_footer.html">Fixed Footer</a></li>
+                      <li><a href="{{ route('admin.notification.index') }}">Danh sách</a></li>
+                      <li><a href="{{ route('admin.notification.create') }}">Thêm mới</a></li>
                     </ul>
                   </li>
                 </ul>

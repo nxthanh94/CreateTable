@@ -134,6 +134,9 @@ html , body{
     border: 1px solid rgba(0, 0, 0, 0.15);
     overflow: hidden
 }
+.highlight {
+    border: 1px solid red !important;
+}
 .calendar-exibit .show-calendar .calendar {
     margin: 0 0 4px 0
 }
@@ -309,6 +312,19 @@ html , body{
 .active a span.fa {
     text-align: right !important;
     margin-right: 4px
+}
+.notification-item {
+    border-radius:10px ;
+    border: 1px solid #ccc;
+    padding:5px 10px;
+    margin-bottom: 20px;
+}
+.notification-item .title-notification {
+    padding-bottom: 10px;
+    border-bottom: 1px solid #000;
+}
+.notification-item p {
+    color: #000;
 }
 .nav-sm .menu_section {
     margin: 0

@@ -23,12 +23,11 @@ class TableController extends Controller
             'name_table' =>'',
             'header' => '',
             'footer' => '',
+            'qrcode' => 0,
     );
 
     public function index($id_process)
     {
-
-
         $data = array(
             'arItems'=>table::where('id_process',$id_process)->get(),
             'id_process' =>$id_process,

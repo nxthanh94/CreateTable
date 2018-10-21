@@ -1,6 +1,7 @@
 <?php
 
 
+Route::pattern('user_id','([0-9]*)');
 Route::pattern('id','([0-9]*)');
 Route::pattern('slug','(.*)');
 Route::get('/', function () {
@@ -34,6 +35,12 @@ Route::get('login/forgot-password',[
 	'uses'	=>'LoginController@forgotpassword',
 	'as'	=>'login.forgot'
 ]);
+
+Route::get('/qrcode-view/{user_id}/{tableId}/{id}',[
+    'uses'	=>'TableController@viewQrCode',
+    'as'	=>'table.qrcodeview'
+]);
+
 Route::post('login/reset-password',[
 	'uses'	=>'LoginController@resetpassword',
 	'as'	=>'login.reset'
@@ -83,6 +90,10 @@ Route::group(['prefix' => 'bang', 'middleware'=>'auth'], function () {
 		'uses'	=>'TableController@exportpdf',
 		'as'	=>'table.exportpdf'
 	]);
+	Route::post('search',[
+		'uses'	=>'TableController@search',
+		'as'	=>'table.search'
+	]);
 });
 Route::group(['prefix' => 'quy-trinh'], function () {
 	Route::get('{slug}-{id}',[
@@ -102,6 +113,41 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin','middleware' => 'auth'
 		'as'  => 'admin.index.index'
 	]);
 
+    Route::group(['prefix' => 'thong-bao'], function () {
+        Route::get('list',[
+            'uses' => 'NotificationController@index',
+            'as'  => 'admin.notification.index'
+        ]);
+        Route::get('add',[
+            'uses' => 'NotificationController@create',
+            'as'  => 'admin.notification.create'
+        ]);
+
+        Route::post('docreate',[
+            'uses' => 'NotificationController@doCreate',
+            'as'  => 'admin.notification.docreate'
+        ]);
+
+        Route::get('del/{id}',[
+            'uses' => 'NotificationController@del',
+            'as'  => 'admin.notification.del'
+        ]);
+
+        Route::get('show/{id}',[
+            'uses' => 'NotificationController@show',
+            'as'  => 'admin.notification.show'
+        ]);
+
+        Route::get('edit/{id}',[
+            'uses' => 'NotificationController@edit',
+            'as'  => 'admin.notification.edit'
+        ]);
+
+        Route::post('doedit/{id}',[
+            'uses' => 'NotificationController@doEdit',
+            'as'  => 'admin.notification.doedit'
+        ]);
+    });
 	//Quản lý service
 	Route::group(['prefix' => 'service'], function () {
 		Route::get('',[

@@ -1,7 +1,7 @@
  <!-- footer content -->
  <footer>
   <div class="pull-right">
-    Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
+    Product by <a href="http://ngoisaovietmedia.com/">Vietstar Media</a>
 </div>
 <div class="clearfix"></div>
 </footer>
@@ -66,6 +66,16 @@
 
 <!-- Custom Theme Scripts -->
 <script src="{{ $url_admin }}/build/js/custom.min.js"></script>
+ <link href="{{ $url_admin }}/build/js/select2.js" rel="stylesheet">
+ @php (!empty($users) ? $dataSelect = $users : $dataSelect = [] )
+ <script type="text/javascript">
+     $('#tags').select2({
+         data: <?php echo(json_encode($dataSelect)) ?>,
+         tags: true,
+         tokenSeparators: [','],
+         placeholder: "Add your tags here"
+     });
+ </script>
 <script type="text/javascript">
     $(document).ready(function(){
         var h = document.getElementById("right_col").offsetHeight;

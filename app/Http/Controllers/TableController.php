@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use App\service;
+use App\process;
 use App\table;
 use App\collums;
 use App\groupcollums;
@@ -20,12 +21,6 @@ class TableController extends MyController
 		'sidebar'	=>'templates.public.index.sidebar',
 		'content'	=>'templates.public.table.content'
 	);
-
-    public function qrcode()
-    {
-        $png = QRCode::format('png')->size(512)->generate(1);
-        $png = base64_encode($png);
-    }
 
     public function getid($slug,$id)
     {
@@ -282,22 +277,22 @@ class TableController extends MyController
        $return ="";
         if(count($groupcollums)<=0)
         {
-            $text_str = '<thead>';
+            $text_str = '<thead style="font-weight: bold; width: 100%"><tr>';
             $text_content = '';
-            $text_end = '</thead>';
-            $text_content .= '<td>';
+            $text_end = '</thead></tr>';
+            $text_content .= '<th>';
             $text_content .= 'STT';
-            $text_content .= '</td>';
+            $text_content .= '</th>';
             foreach ($collums as $item) {
-                $text_content .= '<td>';
+                $text_content .= '<th>';
                 $text_content .= $item['name'];
-                $text_content .= '</td>';
+                $text_content .= '</th>';
             }
             $return = $text_str.$text_content.$text_end;
         }
         else
         {
-            $text_str = '<thead style="font-weight: bold">';
+            $text_str = '<thead style="font-weight: bold; width: 100%">';
             $text_content = '';
             $text_end = '</thead>';
             $text_content_str ='<tr align="center">';
@@ -346,7 +341,7 @@ class TableController extends MyController
     }
     public function create_row_table_html ($collums,$value)
     {
-        $text_str = '<tr>';
+        $text_str = '<tr style="width: 100%">';
         $text_content = '';
         $text_end = '</tr>';
          $text_content .= '<td>';
@@ -361,7 +356,7 @@ class TableController extends MyController
     }
     public function create_content_table_html($collums,$data)
     {
-        $text_str = '<tbody>';
+        $text_str = '<tbody style="width: 100%">';
         $text_content = '';
         $text_end = '</tbody>';
         foreach ($data as $item) {
@@ -400,8 +395,8 @@ class TableController extends MyController
         $groupcollums = groupcollums::where('id_table',$id)->get();
         $header = $table_info['header'];
         $footer = $table_info['footer'];
-        $style ='width:100%';
-        $text_str = '<table class="table table-bordered" border="1" style="'.$style.'">';
+        $style ='width: 100%;';
+        $text_str = '<table border="1" style="'.$style.'">';
         $text_content = '';
         $text_end = '</table>';
         $text_content   .= $this->create_header_table_html($collums,$groupcollums);
@@ -417,23 +412,79 @@ class TableController extends MyController
 
     public function create_qrcode(Request $request)
     {
-        if($request->ajax())
+        if($request->ajax() && count($request->id) > 0)
         {
-            $table_info = table::find($request->id_table);
-            $collums = collums::where('id_table',$request->id_table)->orderBy('stt','ASC')->get();
-            $text_qrcode ="";
-            foreach ($request->id as $key => $value) 
+            $tableId = $request->id_table;
+            $id = $request->id[0];
+            $userId = Session('userInfo');
+            $text_qrcode =route('table.qrcodeview', [$userId, $tableId, $id]);
+        }
+
+        $img_qrcode = '<img src="data:image/png;base64,'.base64_encode(QrCode::encoding('UTF-8')->format('png')->size(200)->generate( $text_qrcode)).'">';
+        $data = ['img_qrcode' =>$img_qrcode , 'tb' =>'ok'];
+        return json_encode($data);
+    }
+
+    public function viewQrCode($user_id ,$tableId, $id)
+    {
+        $table_info = table::find($tableId);
+        $procedure = process::find($table_info->id_process)->id;
+        $qrcodeId = DB::table($table_info->name_table)->where('id',$id)->get();
+        $qrcodeId = (array) $qrcodeId[0];
+        $collums = collums::where('id_table',$tableId)->orderBy('stt','ASC')->get();
+        $collumsQrCode = collums::where('id_table',$tableId)->where('ex_qrcode', 1)->get();
+        $tableQrCode = [];
+
+        if(count($collumsQrCode) > 0){
+
+            $isDate = $this->findCollumDate($collums);
+            $labelDate = '';
+            $valueDate = '';
+            if($isDate !== false && is_numeric($isDate)) {
+                $labelDate = $collums[$isDate]['label'];
+                $valueDate = $qrcodeId[$labelDate];
+            }
+            $tableQrCode = collums::where('label', $collumsQrCode[0]['label'])->where('id_process', $procedure)->get();
+        }
+
+        $dataQrCode = [];
+
+        if(count($tableQrCode) > 0){
+            foreach($tableQrCode as $item)
             {
-                 $row = DB::table($table_info['name_table'])->where('id',$value)->get();
-                 $row = (array) $row[0];
-                 $text_qrcode .= $this->create_text_qrcode($collums, $row);
-                 $text_qrcode .="-------------------%0D%0A";
+                $tableItem = table::find($item->id_table);
+                $collums = collums::where('id_table',$item->id_table)->orderBy('stt','ASC')->get();
+                if ($isDate !== false && is_numeric($isDate)) {
+                    $isDateTable =  $this->findCollumDate($collums);
+                    $labelDateTable = '';
+                    if($isDate !== false && is_numeric($isDate)) {
+                        $labelDateTable = $collums[$isDateTable]['label'];
+                        $valueTable = DB::table($tableItem->name_table)->where($collumsQrCode[0]['label'],$qrcodeId[$collumsQrCode[0]['label']])->whereDate($labelDateTable, '>=', $valueDate)->orderBy('stt','ASC')->get();
+                    }
+                }else {
+                    $valueTable = DB::table($tableItem->name_table)->where($collumsQrCode[0]['label'],$qrcodeId[$collumsQrCode[0]['label']])->orderBy('stt','ASC')->get();
+                }
+                $dataQrCode[] = [
+                    'ten' => $tableItem->name,
+                    'items' => $valueTable,
+                    'collums' => $collums
+                ];
             }
         }
 
-        $img_qrcode = '<img src="data:image/png;base64,'.base64_encode(QrCode::encoding('UTF-8')->format('png')->size(200)->generate(urldecode ($text_qrcode))).'">';
-        $data = ['img_qrcode' =>$img_qrcode , 'tb' =>'ok'];
-        return json_encode($data);
+        return view('templates.public.table.view_qrcode', ['data'=>$dataQrCode]);
+    }
+
+    public function findCollumDate($collums)
+    {
+        $isDate = false;
+        foreach ($collums as $key => $collum)
+        {
+            if ($collum['type'] == 'date') {
+                $isDate = $key;
+            }
+        }
+        return $isDate;
     }
 
     public function create_text_qrcode ($collums,$value)
@@ -445,5 +496,30 @@ class TableController extends MyController
             $text_content .= '%0D%0A';
         }
         return $text_content;
+    }
+
+    public function search(Request $request)
+    {
+         if($request->ajax()){
+            $table_info = table::find($request->id_table);
+            $field = collums::find($request->field_search);
+            if(count($field) > 0){
+                if($field['type'] == 'sting' || $field['type'] = 'text'){
+                    $table = DB::table($table_info['name_table'])->where($field['label'],'like','%'.$request->free_text.'%')->orderBy('stt','ASC')->get();;
+                }else{
+                    $table = DB::table($table_info['name_table'])->where($field['label'],$request->free_text)->orderBy('stt','ASC')->get();;
+                }
+                $collums = collums::where('id_table',$request->id_table)->orderBy('stt','ASC')->get();
+                $text_row ="";
+                foreach ($table as $key => $item) {
+                    $ar_row = $this->changearray($item);
+                    $text_row .= $this->create_row($table_info['name_table'],$collums,$ar_row);
+                }
+                return json_encode(['data'=> $text_row, 'code' => 200]);
+            }else{
+                return json_encode(['data'=> 'Không tìm thấy dữ liệu', 'code' => 401]);
+            }
+         }
+
     }
 }

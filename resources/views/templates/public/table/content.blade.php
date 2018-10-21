@@ -25,6 +25,23 @@
     <!-- /.col-lg-12 -->
 </div>
 <div class="row">
+    <div class="col-lg-12 d-flex justify-content-end">
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <input type="text" class="form-control free_text" id="inputCity">
+        </div>
+        <div class="form-group col-md-4">
+          <select id="inputState" class="form-control field_search">
+            @foreach($collums as $item)
+              <option value="{{$item['id']}}">{{$item['name']}}</option>
+            @endforeach
+          </select>
+        </div>
+        <div class="form-group col-md-2">
+          <button class="btn btn-primary" data="{{$table_info['id']}}" id="btn_search">Tìm kiếm</button>
+        </div>
+      </div>
+    </div>
     <div class="col-lg-12">
    		<table class="table table-striped">
    			<thead class="thead-dark">

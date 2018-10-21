@@ -195,3 +195,38 @@
         });
     });
 </script>
+<!-- search -->
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#btn_search').click(function(){
+            var free_text = $('.free_text').val();
+            var field_search = $('.field_search').val();
+            var id_table = $(this).attr('data');
+            var token = '{{ csrf_token() }}'
+            if(free_text == null)
+            {
+                alert('bạn chưa nhập từ khoá');
+            }
+            else
+            {
+                jQuery.ajax({
+                    type: 'POST',
+                    url: "{{route('table.search')}}",
+                    dataType:'json',
+                    data: {id_table:id_table,free_text:free_text,field_search:field_search,_token:token},           
+                    success: function(data) 
+                    {                                       
+                        if(data.code==200)
+                        {
+                           $('.content-body-table').html(data.data);
+                        }
+                        else
+                        {
+                                alert(data.data);
+                        }
+                    }
+                });
+            }
+        });
+    });
+</script>
