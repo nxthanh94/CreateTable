@@ -192,7 +192,6 @@ class TableController extends MyController
                  case 'date':
                     $text .= '<input type="date"name="'.$item['label'].'"  value="'.$value[$item['label']].'" '.$option.'>';
                     break;
-                    break;
 
                 case 'string':
                    
@@ -255,7 +254,7 @@ class TableController extends MyController
         );
 
         $table_info = table::find($id);
-        $collums = collums::where('id_table',$id)->orderBy('stt','ASC')->get();
+        $collums = collums::where('id_table',$id)->where('showview', 1)->orderBy('stt','ASC')->get();
         $value_table = DB::table($table_info['name_table'])->orderBy('stt','ASC')->get();
         $groupcollums = groupcollums::where('id_table',$id)->get();
         $header = $table_info['header'];
@@ -390,7 +389,7 @@ class TableController extends MyController
         );
 
         $table_info = table::find($id);
-        $collums = collums::where('id_table',$id)->orderBy('stt','ASC')->get();
+        $collums = collums::where('id_table',$id)->where('showview', 1)->orderBy('stt','ASC')->get();
         $value_table = DB::table($table_info['name_table'])->orderBy('stt','ASC')->get();
         $groupcollums = groupcollums::where('id_table',$id)->get();
         $header = $table_info['header'];
@@ -416,8 +415,7 @@ class TableController extends MyController
         {
             $tableId = $request->id_table;
             $id = $request->id[0];
-            $userId = Session('userInfo');
-            $text_qrcode =route('table.qrcodeview', [$userId, $tableId, $id]);
+            $text_qrcode =route('table.qrcodeview', [$tableId, $id]);
         }
 
         $img_qrcode = '<img src="data:image/png;base64,'.base64_encode(QrCode::encoding('UTF-8')->format('png')->size(200)->generate( $text_qrcode)).'">';
@@ -425,10 +423,11 @@ class TableController extends MyController
         return json_encode($data);
     }
 
-    public function viewQrCode($user_id ,$tableId, $id)
+    public function viewQrCode($tableId, $id)
     {
         $table_info = table::find($tableId);
-        $procedure = process::find($table_info->id_process)->id;
+        $userId = process::find($table_info->id_process)->id_user;
+        $processUser =process::where('id_user', $userId)->select('id')->get();
         $qrcodeId = DB::table($table_info->name_table)->where('id',$id)->get();
         $qrcodeId = (array) $qrcodeId[0];
         $collums = collums::where('id_table',$tableId)->orderBy('stt','ASC')->get();
@@ -444,7 +443,7 @@ class TableController extends MyController
                 $labelDate = $collums[$isDate]['label'];
                 $valueDate = $qrcodeId[$labelDate];
             }
-            $tableQrCode = collums::where('label', $collumsQrCode[0]['label'])->where('id_process', $procedure)->get();
+            $tableQrCode = collums::where('label', $collumsQrCode[0]['label'])->wherein('id_process', $processUser)->get();
         }
 
         $dataQrCode = [];
@@ -453,7 +452,7 @@ class TableController extends MyController
             foreach($tableQrCode as $item)
             {
                 $tableItem = table::find($item->id_table);
-                $collums = collums::where('id_table',$item->id_table)->orderBy('stt','ASC')->get();
+                $collums = collums::where('id_table',$item->id_table)->where('showqrcode', 1)->orderBy('stt','ASC')->get();
                 if ($isDate !== false && is_numeric($isDate)) {
                     $isDateTable =  $this->findCollumDate($collums);
                     $labelDateTable = '';

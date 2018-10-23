@@ -48,7 +48,6 @@ class CollumsController extends Controller
         {
             return redirect()->route('admin.collums.add',$id_table);
         }
-       
     }
     public function addget($id_table)
     {
@@ -121,6 +120,30 @@ class CollumsController extends Controller
     	}
 
     }
+    public function changeView(Request $request) {
+        if($request->ajax()) {
+            try {
+                DB::beginTransaction();
+
+                DB::table('collums')
+                    ->where('id', $request->id)
+                    ->update([ $request->col =>  $request->val]);
+                DB::commit();
+                $response =  [
+                    'code' => 200,
+                    'msg' => '',
+                ];
+                echo json_encode($response);
+            } catch (Exception $ex) {
+                $response =  [
+                    'code' => 503,
+                    'msg' => 'Has errors',
+                ];
+                echo json_encode($response);
+                DB::rollBack();
+            }
+        }
+    }
     public function addcollumsget($id_table)
     {
         $data = array(
@@ -172,6 +195,8 @@ class CollumsController extends Controller
                         $table->type = $data_frm['type'][$i];
                         $table->ex_qrcode = $data_frm['ex_qrcode'][$i];
                         $table->label =$labe;
+                        $table->showview = 1;
+                        $table->showqrcode = 1;
                         $table->save();
                         $this->boot();
                         $this->addcollums_table($name_table[0]['name_table'],$labe,$type);

@@ -36,13 +36,6 @@
     <script type="text/javascript">
         var baseURL = "{!! url('/') !!}";
     </script>
-    <script>
-
-        $(document).ready(function () {
-            $("#e12").select2({tags:["red", "green", "blue"]});
-        });
-
-    </script>
   </head>
 
   <body class="nav-md">

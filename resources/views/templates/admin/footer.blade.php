@@ -77,13 +77,6 @@
      });
  </script>
 <script type="text/javascript">
-    $(document).ready(function(){
-        var h = document.getElementById("right_col").offsetHeight;
-        var l = document.getElementById("left_col").offsetHeight;
-        document.getElementById("right_col").style.minHeight = l + "px";
-    });
-</script>
-<script type="text/javascript">
     $('.add-collum').click(function(){
       var html = $('.content-frm-collum').html();
       var stt_o = $('.content-frm-collum .content-stt').html();
@@ -276,6 +269,13 @@
   });
   
 </script>
-
+ @yield('js')
+ <script type="text/javascript">
+     $(document).ready(function(){
+         var h = document.getElementById("right_col").offsetHeight;
+         var l = document.getElementById("left_col").offsetHeight;
+         document.getElementById("right_col").style.minHeight = l + "px";
+     });
+ </script>
 </body>
 </html>

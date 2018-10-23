@@ -36,7 +36,7 @@ Route::get('login/forgot-password',[
 	'as'	=>'login.forgot'
 ]);
 
-Route::get('/qrcode-view/{user_id}/{tableId}/{id}',[
+Route::get('/qrcode-view/{tableId}/{id}',[
     'uses'	=>'TableController@viewQrCode',
     'as'	=>'table.qrcodeview'
 ]);
@@ -250,6 +250,44 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin','middleware' => 'auth'
 		]);
 
 	});
+
+    Route::group(['prefix'=>'relationship'], function(){
+        Route::get('list/{id_process}',[
+            'uses'=>'RelationshipController@index',
+            'as'=>'admin.relationship.index'
+        ]);
+
+        Route::get('create/{id_process}',[
+            'uses'=>'RelationshipController@create',
+            'as'=>'admin.relationship.create'
+        ]);
+
+        Route::post('create/{id_process}',[
+            'uses'=>'RelationshipController@doCreate',
+            'as'=>'admin.relationship.createpost'
+        ]);
+
+        Route::get('edit/{id}/',[
+            'uses'=>'RelationshipController@edit',
+            'as'=>'admin.relationship.edit'
+        ]);
+
+        Route::post('edit/{id}',[
+            'uses'=>'RelationshipController@doEdit',
+            'as'=>'admin.relationship.editpost'
+        ]);
+
+        Route::get('del/{id}',[
+            'uses' => 'RelationshipController@del',
+            'as'  => 'admin.relationship.del'
+        ]);
+
+        Route::post('ajax_get_collums}',[
+            'uses'=>'RelationshipController@ajaxGetCollums',
+            'as'=>'admin.relationship.ajax_get_collums'
+        ]);
+    });
+
 	//Quản news newsservice
 	Route::group(['prefix'=>'news-service'], function(){
 		Route::get('',[
@@ -345,6 +383,10 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin','middleware' => 'auth'
 			'uses' => 'CollumsController@change_value',
 			'as'  => 'admin.collums.ajaxchangevalue'
 		]);
+        Route::post('change-view',[
+            'uses' => 'CollumsController@changeView',
+            'as'  => 'admin.collums.ajaxchangeview'
+        ]);
 		Route::get('/edit/{id}',[
 			'uses' => 'CollumsController@getedit',
 			'as'  => 'admin.collums.edit'
