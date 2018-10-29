@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use App\collums;
 use App\relationship;
 use App\table;
+use App\process;
 use Validator;
 
 class RelationshipController extends Controller
@@ -36,7 +37,8 @@ class RelationshipController extends Controller
 
     public function create($id_process)
     {
-        $tableList = table::where('id_process', $id_process)->get();
+        $processUser = process::where('id_user', $id_process)->select('id')->get();
+        $tableList = table::wherein('id_process', $processUser)->get();
         $data = array(
             'value_frm' => $this->value_frm,
             'tableList' => $tableList,
@@ -64,7 +66,8 @@ class RelationshipController extends Controller
             }
 
             if ($validator ->fails() || $doubleTable) {
-                $tableList = table::where('id_process', $id_process)->get();
+                $processUser = process::where('id_user', $id_process)->select('id')->get();
+                $tableList = table::wherein('id_process', $processUser)->get();
                 $data = array(
                     'value_frm' => $this->value_frm,
                     'tableList' => $tableList,
@@ -100,7 +103,8 @@ class RelationshipController extends Controller
         $relationship = relationship::find($id);
         if(!empty($relationship)) {
             $id_process = $relationship['id_process'];
-            $tableList = table::where('id_process', $id_process)->get();
+            $processUser = process::where('id_user', $id_process)->select('id')->get();
+            $tableList = table::wherein('id_process', $processUser)->get();
             $colPri = collums::where('id_table', $relationship['id_table_pri'])->get();
             $colFor = collums::where('id_table', $relationship['id_table_for'])->get();
             $data = array(
@@ -138,7 +142,8 @@ class RelationshipController extends Controller
                 }
 
                 if ($validator ->fails() || $doubleTable) {
-                    $tableList = table::where('id_process', $id_process)->get();
+                    $processUser = process::where('id_user', $id_process)->select('id')->get();
+                    $tableList = table::wherein('id_process', $processUser)->get();
                     $colPri = collums::where('id_table', $relationship['id_table_pri'])->get();
                     $colFor = collums::where('id_table', $relationship['id_table_for'])->get();
                     $data = array(

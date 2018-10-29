@@ -29,6 +29,7 @@
         <div class="x_panel">
           <div class="x_title">
             <a href="{{ route('admin.process.add',$id_user) }}" class="btn btn-primary">Thêm</a>
+            <a href="{{ route('admin.relationship.index',$id_user) }}" class="btn btn-primary">Quan hệ bảng</a>
             <ul class="nav navbar-right panel_toolbox">
               <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
               </li>

@@ -10,6 +10,7 @@ use App\process;
 use App\table;
 use App\collums;
 use App\groupcollums;
+use App\relationship;
 use Excel;
 use PDF;
 use QrCode;
@@ -25,13 +26,14 @@ class TableController extends MyController
     public function getid($slug,$id)
     {
     	$collums = collums::where('id_table',$id)->orderBy('stt','ASC')->get();$table_info = table::find($id);
-        if(Schema::hasTable($table_info['name_table']))
+        $dataList = $this->getDataList($id);
+    	if(Schema::hasTable($table_info['name_table']))
         {
             $table = DB::table($table_info['name_table'])->orderBy('stt','ASC')->get();
             $text_row ="";
             foreach ($table as $key => $item) {
                 $ar_row = $this->changearray($item);
-                $text_row .= $this->create_row($table_info['name_table'],$collums,$ar_row);
+                $text_row .= $this->create_row($table_info['name_table'],$collums,$ar_row, $dataList);
             }
             $this->data['title'] = $table_info['name'];
             $this->data['collums'] = $collums;
@@ -39,6 +41,7 @@ class TableController extends MyController
             $this->data['template'] = $this->template;
             $this->data['table_info'] = $table_info;
             $this->data['stt'] = $this->create_stt($table_info['name_table']) - 1;
+            $this->data['dataList'] = $dataList;
             return view('templates.public.index',$this->data);
         }
         else
@@ -52,6 +55,7 @@ class TableController extends MyController
     	$id = $request->name_table;
     	$id_user = $request->id_user;
     	$table_info = table::find($id);
+        $dataList = $this->getDataList($id);
     	$collums = collums::where('id_table',$table_info['id'])->orderBy('stt','ASC')->get();
     	$data_df = $this->create_value_df($collums);
     	$data_df['id_user'] = $id;
@@ -60,7 +64,7 @@ class TableController extends MyController
         $id_row = DB::table($table_info['name_table'])->max('id');
         $row = DB::table($table_info['name_table'])->where('id','=',$id_row)->get();
         $ar_row = $this->changearray($row[0]);
-        $text_row = $this->create_row($table_info['name_table'],$collums,$ar_row);
+        $text_row = $this->create_row($table_info['name_table'],$collums,$ar_row, $dataList);
         $return['value'] = $text_row;
         $return['stt'] =$data_df['stt'];
         echo json_encode($return);
@@ -71,13 +75,14 @@ class TableController extends MyController
         $id = $request->id_table;
         $stt = $request->stt;
         $table_info = table::find($id);
+        $dataList = $this->getDataList($id);
         $collums = collums::where('id_table',$id)->orderBy('stt','ASC')->get();
         $rowcopy =  DB::table($table_info['name_table'])->where('stt','=',$stt)->get();
         $text_row ="";
         foreach ($rowcopy as $key => $item) {
             $val_copy = $this->changearray($item);
             $val_copy['stt']= $this->create_stt($table_info['name_table']);
-            $text_row .= $this->create_row($table_info['name_table'],$collums, $val_copy);
+            $text_row .= $this->create_row($table_info['name_table'],$collums, $val_copy, $dataList);
             unset($val_copy['id']);
             
             DB::table($table_info['name_table'])->insert($val_copy );
@@ -146,7 +151,7 @@ class TableController extends MyController
         }
         return $data_df;
     }
-    public function create_row($name_table,$collums,$value)
+    public function create_row($name_table,$collums,$value, $dataList = null)
     {
 
         $text = '<tr>';
@@ -170,13 +175,17 @@ class TableController extends MyController
             $id = $value['id'];
             $val = 'this.value';
             $option = 'onblur="updatecollums('.$table.','.$id.','.$name_collums.','. $val.');"';
+            $setDataList = "";
+            if (!empty($dataList[$item['label']])) {
+                $setDataList = 'list="'.$item['label'].'"';
+            }
             switch ($item['type']) {
                 case 'int':
-                    $text .= '<input type="text"  name="'.$item['label'].'" value="'.$value[$item['label']].'" '.$option.'>';
+                    $text .= '<input type="text" '.$setDataList.'  name="'.$item['label'].'" value="'.$value[$item['label']].'" '.$option.'>';
                     break;
 
                 case 'float':
-                    $text .= '<input type="text" name="'.$item['label'].'" value="'.$value[$item['label']].'" '.$option.'>';
+                    $text .= '<input type="text" '.$setDataList.' name="'.$item['label'].'" value="'.$value[$item['label']].'" '.$option.'>';
                     break;
 
                 case 'tinyInteger':
@@ -195,14 +204,14 @@ class TableController extends MyController
 
                 case 'string':
                    
-                    $text .= '<input type="text" name="'.$item['label'].'"  value="'.$value[$item['label']].'" '.$option.'>';
+                    $text .= '<input type="text" '.$setDataList.' name="'.$item['label'].'"  value="'.$value[$item['label']].'" '.$option.'>';
                     break;
 
                 case 'text':
-                    $text .= '<input type="text" name="'.$item['label'].'"  value="'.$value[$item['label']].'" '.$option.'>';
+                    $text .= '<input type="text" '.$setDataList.' name="'.$item['label'].'"  value="'.$value[$item['label']].'" '.$option.'>';
                     break;
                 default:
-                    $text .= '<input type="text" name="'.$item['label'].'"  value="'.$value[$item['label']].'" '.$option.'>';
+                    $text .= '<input type="text" '.$setDataList.' name="'.$item['label'].'"  value="'.$value[$item['label']].'" '.$option.'>';
                     break;
                 }
              $text .= '</td>';
@@ -353,11 +362,18 @@ class TableController extends MyController
         }
         return $text_str.$text_content.$text_end;
     }
-    public function create_content_table_html($collums,$data)
+    public function create_content_table_html($collums,$data , $body = true)
     {
         $text_str = '<tbody style="width: 100%">';
         $text_content = '';
         $text_end = '</tbody>';
+
+        if($body == false) {
+            $text_str = '';
+            $text_content = '';
+            $text_end = '';
+        }
+
         foreach ($data as $item) {
             $value = $this->changearray($item);
             $text_content .= $this->create_row_table_html($collums,$value);
@@ -411,23 +427,25 @@ class TableController extends MyController
 
     public function create_qrcode(Request $request)
     {
+        $text_qrcode = '';
         if($request->ajax() && count($request->id) > 0)
         {
             $tableId = $request->id_table;
             $id = $request->id[0];
-            $text_qrcode =route('table.qrcodeview', [$tableId, $id]);
+            $text_qrcode = route('table.qrcodeview', [$tableId, $id]);
+            $routeFilter = route('table.filtertable', [$tableId, $id]);
         }
 
         $img_qrcode = '<img src="data:image/png;base64,'.base64_encode(QrCode::encoding('UTF-8')->format('png')->size(200)->generate( $text_qrcode)).'">';
-        $data = ['img_qrcode' =>$img_qrcode , 'tb' =>'ok'];
+        $data = ['img_qrcode' =>$img_qrcode , 'url_filter' =>$routeFilter, 'tb' =>'ok'];
         return json_encode($data);
     }
 
-    public function viewQrCode($tableId, $id)
+    public function filterTable($tableId, $id)
     {
         $table_info = table::find($tableId);
         $userId = process::find($table_info->id_process)->id_user;
-        $processUser =process::where('id_user', $userId)->select('id')->get();
+        $processUser = process::where('id_user', $userId)->select('id')->get();
         $qrcodeId = DB::table($table_info->name_table)->where('id',$id)->get();
         $qrcodeId = (array) $qrcodeId[0];
         $collums = collums::where('id_table',$tableId)->orderBy('stt','ASC')->get();
@@ -451,27 +469,314 @@ class TableController extends MyController
         if(count($tableQrCode) > 0){
             foreach($tableQrCode as $item)
             {
+
                 $tableItem = table::find($item->id_table);
-                $collums = collums::where('id_table',$item->id_table)->where('showqrcode', 1)->orderBy('stt','ASC')->get();
-                if ($isDate !== false && is_numeric($isDate)) {
-                    $isDateTable =  $this->findCollumDate($collums);
-                    $labelDateTable = '';
-                    if($isDate !== false && is_numeric($isDate)) {
-                        $labelDateTable = $collums[$isDateTable]['label'];
-                        $valueTable = DB::table($tableItem->name_table)->where($collumsQrCode[0]['label'],$qrcodeId[$collumsQrCode[0]['label']])->whereDate($labelDateTable, '>=', $valueDate)->orderBy('stt','ASC')->get();
-                    }
-                }else {
-                    $valueTable = DB::table($tableItem->name_table)->where($collumsQrCode[0]['label'],$qrcodeId[$collumsQrCode[0]['label']])->orderBy('stt','ASC')->get();
+                if ($tableItem['qrcode'] == 1) {
+                    $collums = collums::where('id_table',$item->id_table)->where('showqrcode', 1)->orderBy('stt','ASC')->get();
+                    // if ($isDate !== false && is_numeric($isDate)) {
+                    //     $isDateTable =  $this->findCollumDate($collums);
+                    //     $labelDateTable = '';
+                    //     if($isDate !== false && is_numeric($isDate)) {
+                    //         $labelDateTable = $collums[$isDateTable]['label'];
+                    //         $valueTable = DB::table($tableItem->name_table)->where($collumsQrCode[0]['label'],$qrcodeId[$collumsQrCode[0]['label']])->orderBy('stt','ASC')->get();
+                    //     }
+                    // }else {
+                       
+                    // }
+                     $valueTable = DB::table($tableItem->name_table)->where($collumsQrCode[0]['label'],$qrcodeId[$collumsQrCode[0]['label']])->orderBy('stt','ASC')->get();
+                    $dataQrCode[] = [
+                        'ten' => $tableItem->name,
+                        'tableId' => $tableItem->id,
+                        'id' => $id,
+                        'items' => $valueTable,
+                        'collums' => $collums
+                    ];
                 }
-                $dataQrCode[] = [
-                    'ten' => $tableItem->name,
-                    'items' => $valueTable,
-                    'collums' => $collums
-                ];
+            }
+
+        }
+
+        $this->data['title'] = $table_info['name'];
+        $this->data['template'] = $this->template;
+        $this->data['template']['content'] = 'templates.public.table.filter_table';
+        $this->data['table_info'] = $table_info;
+        $this->data['data'] = $dataQrCode;
+        $this->data['routeAction'] = route('table.grenterfiltertable', [$tableId, $id]);
+
+        return view('templates.public.index', $this->data);
+    }
+
+    public function grenterQrcode(Request $request,$tableId, $id)
+    {
+        $data = $request->all();
+        unset($data['_token']);
+        $param = [
+            'tableId' => $tableId,
+            'id' => $id,
+            'data' => $data,
+        ];
+        $text_qrcode = route('table.qrcodeview', $param);
+        $img_qrcode = '<img src="data:image/png;base64,'.base64_encode(QrCode::encoding('UTF-8')->format('png')->size(200)->generate( $text_qrcode)).'">';
+
+        $this->data['template'] = $this->template;
+        $this->data['template']['content'] = 'templates.public.table.qrcode';
+        $this->data['data'] = $img_qrcode;
+
+        return view('templates.public.index', $this->data);
+    }
+
+    public function viewQrCode(Request $request,$tableId, $id)
+    {
+        $table_info = table::find($tableId);
+        $userId = process::find($table_info->id_process)->id_user;
+        $processUser = process::where('id_user', $userId)->select('id')->get();
+        $qrcodeId = DB::table($table_info->name_table)->where('id',$id)->get();
+        $qrcodeId = (array) $qrcodeId[0];
+        $collums = collums::where('id_table',$tableId)->orderBy('stt','ASC')->get();
+        $collumsQrCode = collums::where('id_table',$tableId)->where('ex_qrcode', 1)->get();
+        $tableQrCode = [];
+
+        if(count($collumsQrCode) > 0){
+
+            $isDate = $this->findCollumDate($collums);
+            $labelDate = '';
+            $valueDate = '';
+            if($isDate !== false && is_numeric($isDate)) {
+                $labelDate = $collums[$isDate]['label'];
+                $valueDate = $qrcodeId[$labelDate];
+            }
+            $tableQrCode = collums::where('label', $collumsQrCode[0]['label'])->wherein('id_process', $processUser)->get();
+        }
+
+        $dataQrCode = [];
+
+        if(count($tableQrCode) > 0){
+            foreach($tableQrCode as $item)
+            {
+                $condition = !empty($request['data']['table']) ? $request['data']['table'] : null;
+                $tableItem = table::find($item->id_table);
+
+                if ($tableItem['qrcode'] == 1) {
+                    $collums = collums::where('id_table',$item->id_table)->where('showqrcode', 1)->orderBy('stt','ASC')->get();
+                    if(!empty($condition) &&  !empty($condition[$item->id_table]['condition'])) {
+                        $valueTable = $this->getCondition($item->id_table, $id, $condition[$item->id_table]['col'], $condition[$item->id_table]['condition']);
+                    } else {
+                        if ($isDate !== false && is_numeric($isDate)) {
+                            $isDateTable =  $this->findCollumDate($collums);
+                            $labelDateTable = '';
+                            if($isDate !== false && is_numeric($isDate)) {
+                                $labelDateTable = $collums[$isDateTable]['label'];
+                                $valueTable = DB::table($tableItem->name_table)->where($collumsQrCode[0]['label'],$qrcodeId[$collumsQrCode[0]['label']])->whereDate($labelDateTable, '>=', $valueDate)->orderBy('stt','ASC')->get();
+                            }
+                        }else {
+                            $valueTable = DB::table($tableItem->name_table)->where($collumsQrCode[0]['label'],$qrcodeId[$collumsQrCode[0]['label']])->orderBy('stt','ASC')->get();
+                        }
+                    }
+
+                    $dataQrCode[] = [
+                        'ten' => $tableItem->name,
+                        'tableId' => $tableItem->id,
+                        'id' => $id,
+                        'items' => $valueTable,
+                        'collums' => $collums
+                    ];
+                }
+            }
+
+        }
+        return view('templates.public.table.view_qrcode', ['data'=>$dataQrCode]);
+    }
+
+    private function getCondition($tableId, $id, $col, $valueCondition)
+    {
+        $valueTable = null;
+        $table_info = table::find($tableId);
+        $collumGet = collums::find($col);
+
+        if (!empty($table_info) && !empty($collumGet)) {
+            $label = $collumGet['label'];
+            $condition = explode('|', $valueCondition);
+            $userId = process::find($table_info->id_process)->id_user;
+            $processUser = process::where('id_user', $userId)->select('id')->get();
+            $qrcodeId = DB::table($table_info->name_table)->where('id', $id)->get();
+            $qrcodeId = (array)$qrcodeId[0];
+            $collums = collums::where('id_table', $tableId)->orderBy('stt', 'ASC')->get();
+            $collumsQrCode = collums::where('id_table', $tableId)->where('ex_qrcode', 1)->get();
+            $qrcodeId[$collumsQrCode[0]['label']] = $id;
+            if (!empty($condition)) {
+                $obout = null;
+                $object = [];
+                if (count($condition) >= 2) {
+                    $oboutItem = explode(':', $condition[0]);
+                    if (!empty($oboutItem)) {
+                        $obout = $oboutItem;
+                    }
+
+                    $object = explode(',', $condition[1]);
+                    if (!empty($oboutItem)) {
+                        $object = $object;
+                    }
+                } elseif (count($condition) == 1) {
+                    $oboutItem = explode(':', $condition[0]);
+                    if (count($oboutItem) > 1) {
+                        $obout = $oboutItem;
+                    } else {
+                        $object = explode(',', $condition[0]);
+                        if (!empty($oboutItem)) {
+                            $object = $object;
+                            $obout = [];
+                        }
+                    }
+                }
+
+                if (!empty($obout) && !empty($object)) {
+                    if (count($obout) == 2) {
+                        if ($obout[0] == '$') {
+                            $valueTable = DB::table($table_info->name_table)->where($collumsQrCode[0]['label'], $qrcodeId[$collumsQrCode[0]['label']])->whereDate($collumGet['label'], '>=', $obout[1])->orWhereIn($collumGet['label'], $object)->orderBy('stt', 'ASC')->get();
+                        } elseif ($obout[1] == '$') {
+                            $valueTable = DB::table($table_info->name_table)->where($collumsQrCode[0]['label'], $qrcodeId[$collumsQrCode[0]['label']])->whereDate($collumGet['label'], '<=', $obout[0])->orWhereIn($collumGet['label'], $object)->orderBy('stt', 'ASC')->get();
+                        } else {
+                            $valueTable = DB::table($table_info->name_table)->where($collumsQrCode[0]['label'], $qrcodeId[$collumsQrCode[0]['label']])->whereDate($collumGet['label'], '>=', $obout[0])->whereDate($collumGet['label'], '<=', $obout[1])->orWhereIn($collumGet['label'], $object)->orderBy('stt', 'ASC')->get();
+                        }
+                    } elseif (count($obout) == 1) {
+                        $valueTable = DB::table($table_info->name_table)->where($collumsQrCode[0]['label'], $qrcodeId[$collumsQrCode[0]['label']])->whereDate($collumGet['label'], '>=', $obout[0])->orWhereIn($collumGet['label'], $object)->orderBy('stt', 'ASC')->get();
+                    }
+                } elseif (empty($object) && !empty($obout)) {
+                    if (!empty($obout[1]) && $obout[0] == '$') {
+                        $valueTable = DB::table($table_info->name_table)->where($collumsQrCode[0]['label'], $qrcodeId[$collumsQrCode[0]['label']])->whereDate($collumGet['label'], '>=', $obout[1])->orderBy('stt', 'ASC')->get();
+                    } elseif (!empty($obout[1]) && $obout[1] == '$') {
+                        $valueTable = DB::table($table_info->name_table)->where($collumsQrCode[0]['label'], $qrcodeId[$collumsQrCode[0]['label']])->whereDate($collumGet['label'], '<=', $obout[0])->orderBy('stt', 'ASC')->get();
+                    } else {
+                        $valueTable = DB::table($table_info->name_table)->where($collumsQrCode[0]['label'], $qrcodeId[$collumsQrCode[0]['label']])->whereDate($collumGet['label'], '>=', $obout[0])->whereDate($collumGet['label'], '<=', $obout[1])->orderBy('stt', 'ASC')->get();
+                    }
+                } elseif (empty($obout) && !empty($object)) {
+                    $valueTable = DB::table($table_info->name_table)->where($collumsQrCode[0]['label'], $qrcodeId[$collumsQrCode[0]['label']])->whereIn($collumGet['label'], $object)->orderBy('stt', 'ASC')->get();
+                }
+                $valueTable = $this->delOtherItem($valueTable, $collumsQrCode[0]['label'],  $qrcodeId[$collumsQrCode[0]['label']]);
+
+            }
+        }
+        return $valueTable;
+    }
+
+    public function qrcodeFilter(Request $request)
+    {
+        if ($request->ajax()) {
+            $response = [
+                'code' => 503,
+                'msg' => 'Không tìm thấy bảng',
+            ];
+            $tableId =  $request->tableId;
+            $table_info = table::find($tableId);
+            $id = $request->id;
+            $collumGet = collums::find($request->col);
+
+            if (!empty($table_info) && !empty($collumGet)) {
+                $label = $collumGet['label'];
+                $collums = collums::where('id_table', $tableId)->where('showqrcode', 1)->orderBy('stt','ASC')->get();
+                $condition = explode('|', $request->condition);
+                $userId = process::find($table_info->id_process)->id_user;
+                $processUser = process::where('id_user', $userId)->select('id')->get();
+                $qrcodeId = DB::table($table_info->name_table)->where('id',$id)->get();
+                $qrcodeId = (array) $qrcodeId[0];
+                $collums = collums::where('id_table',$tableId)->orderBy('stt','ASC')->get();
+                $collumsQrCode = collums::where('id_table',$tableId)->where('ex_qrcode', 1)->get();
+                $qrcodeId[$collumsQrCode[0]['label']] = $id;
+                if (!empty($condition)) {
+                    $obout = null;
+                    $object = [];
+                    if(count($condition) >= 2) {
+                        $oboutItem = explode(':', $condition[0]);
+                        if (!empty($oboutItem)) {
+                            $obout = $oboutItem;
+                        }
+
+                        $object = explode(',', $condition[1]);
+                        if (!empty($oboutItem)) {
+                            $object = $object;
+                        }
+                    } elseif (count($condition) == 1) {
+                        $oboutItem = explode(':', $condition[0]);
+                        if (count($oboutItem) > 1) {
+                            $obout = $oboutItem;
+                        } else {
+                            $object = explode(',', $condition[0]);
+                            if (!empty($oboutItem)) {
+                                $object = $object;
+                                $obout = [];
+                            }
+                        }
+                    }
+
+                    $valueTable = null;
+
+                    if (!empty($obout) && !empty($object)) {
+                        if(count($obout) == 2) {
+                            if($obout[0] == '$') {
+                                $valueTable = DB::table($table_info->name_table)->where($collumsQrCode[0]['label'],$qrcodeId[$collumsQrCode[0]['label']])->whereDate($collumGet['label'], '>=', $obout[1])->orWhereIn($collumGet['label'], $object)->orderBy('stt','ASC')->get();
+                            } elseif ($obout[1] == '$') {
+                                $valueTable = DB::table($table_info->name_table)->where($collumsQrCode[0]['label'],$qrcodeId[$collumsQrCode[0]['label']])->whereDate($collumGet['label'], '<=', $obout[0])->orWhereIn($collumGet['label'], $object)->orderBy('stt','ASC')->get();
+                            } else {
+                                $valueTable = DB::table($table_info->name_table)->where($collumsQrCode[0]['label'],$qrcodeId[$collumsQrCode[0]['label']])->whereDate($collumGet['label'], '>=', $obout[0])->whereDate($collumGet['label'], '<=', $obout[1])->orWhereIn($collumGet['label'], $object)->orderBy('stt','ASC')->get();
+                            }
+                        } elseif (count($obout) == 1) {
+                            $valueTable = DB::table($table_info->name_table)->where($collumsQrCode[0]['label'],$qrcodeId[$collumsQrCode[0]['label']])->whereDate($collumGet['label'], '>=', $obout[0])->orWhereIn($collumGet['label'], $object)->orderBy('stt','ASC')->get();
+                        }
+                    } elseif (empty($object) && !empty($obout)) {
+                        if(!empty($obout[1]) && $obout[0] == '$') {
+                            $valueTable = DB::table($table_info->name_table)->where($collumsQrCode[0]['label'],$qrcodeId[$collumsQrCode[0]['label']])->whereDate($collumGet['label'], '>=', $obout[1])->orderBy('stt','ASC')->get();
+                        } elseif (!empty($obout[1]) && $obout[1] == '$') {
+                            $valueTable = DB::table($table_info->name_table)->where($collumsQrCode[0]['label'],$qrcodeId[$collumsQrCode[0]['label']])->whereDate($collumGet['label'], '<=', $obout[0])->orderBy('stt','ASC')->get();
+                        } else {
+                            $valueTable = DB::table($table_info->name_table)->where($collumsQrCode[0]['label'],$qrcodeId[$collumsQrCode[0]['label']])->whereDate($collumGet['label'], '>=', $obout[0])->whereDate($collumGet['label'], '<=', $obout[1])->orderBy('stt','ASC')->get();
+                        }
+                    } elseif (empty($obout) &&  !empty($object)) {
+
+                        $valueTable = DB::table($table_info->name_table)->where($collumsQrCode[0]['label'],$qrcodeId[$collumsQrCode[0]['label']])->whereIn($collumGet['label'], $object)->orderBy('stt','ASC')->get();
+                    }
+                    $text_content = '';
+                    if(!empty($valueTable)) {
+                        $valueTable = $this->delOtherItem($valueTable, $collumsQrCode[0]['label'],  $qrcodeId[$collumsQrCode[0]['label']]);
+                        $text_content = $this->create_content_table_html($collums,$valueTable, false);
+                        $response = [
+                            'code' => 200,
+                            'msg' => '',
+                            'data_table' => $text_content,
+                        ];
+                    } else {
+                        $response = [
+                            'code' => 422,
+                            'msg' => 'Không tìm thấy bảng',
+                        ];
+                    }
+                } else {
+                    $valueTable = DB::table($table_info->name_table)->where($collumsQrCode[0]['label'],$qrcodeId[$collumsQrCode[0]['label']])->orderBy('stt','ASC')->get();
+                    $text_content = $this->create_content_table_html($collums,$valueTable, false);
+                    $response = [
+                        'code' => 200,
+                        'msg' => '',
+                        'data_table' => $text_content,
+                    ];
+                }
+
+            }
+            return json_encode($response);
+        }
+    }
+
+    private function delOtherItem($data, $col, $value)
+    {
+        //$data = (array) $data;
+        $dataOulput = [];
+        foreach ($data as $key => $item)
+        {
+            $item = (array) $item;
+            if (!empty($item[$col]) && $item[$col] == $value) {
+                $dataOulput[] = $item;
             }
         }
 
-        return view('templates.public.table.view_qrcode', ['data'=>$dataQrCode]);
+        return $dataOulput;
     }
 
     public function findCollumDate($collums)
@@ -520,5 +825,24 @@ class TableController extends MyController
             }
          }
 
+    }
+
+    private function getDataList($tableId)
+    {
+        $dataList = [];
+        $relationship = relationship::where('id_table_for', $tableId)->get();
+        if (!empty($relationship)) {
+            foreach ($relationship as $item)
+            {
+                $tablePri = table::find($item['id_table_pri']);
+                $collumPri =  collums::find($item['col_pri']);
+
+                if(!empty($tablePri) && !empty($collumPri)) {
+                    $dataListItem = DB::table($tablePri['name_table'])->select($collumPri['label'])->get();
+                    $dataList[$collumPri['label']] = $dataListItem;
+                }
+            }
+        }
+        return $dataList;
     }
 }

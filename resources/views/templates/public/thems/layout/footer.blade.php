@@ -176,6 +176,7 @@
                         if(data.tb=='ok')
                         {
                             $('.content-qrcode').html(data.img_qrcode);
+                            $('.filter-table').attr('href', data.url_filter)
                             $('#qrcode_png').modal({
                                 show: 'true'
                             }); 
@@ -227,6 +228,30 @@
                     }
                 });
             }
+        });
+    });
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.filter_data').click(function () {
+            var tableId = $(this).attr('data-table');
+            var col = $('#col_'+tableId).val();
+            var condition = $('#condition_'+tableId).val();
+            var id = $(this).attr('data-id');
+            var url = "{{ route('table.qrcodefilter') }}";
+            var token = '{{ csrf_token() }}';
+
+            jQuery.ajax({
+                type: 'POST',
+                url: url,
+                dataType:'json',
+                data: {id:id,col:col,condition:condition,tableId:tableId,_token:token},
+                success: function(data) {
+                    if (data.code == 200) {
+                        $('#content_'+tableId).html(data.data_table);
+                    }
+                }
+            });
         });
     });
 </script>

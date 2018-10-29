@@ -30,7 +30,7 @@
                     <div class="x_panel">
                         <div class="x_title">
                             <a href="{{ route('admin.relationship.create',$id_process) }}" class="btn btn-primary">Thêm</a>
-                            <a href="{{ route('admin.table.index',$id_process) }}" class="btn btn-primary">Quản lý bảng</a>
+                            <a href="{{ route('admin.process.index',$id_process) }}" class="btn btn-primary">Quy Trình</a>
                             <ul class="nav navbar-right panel_toolbox">
                                 <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                                 </li>

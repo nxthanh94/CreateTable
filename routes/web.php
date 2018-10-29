@@ -36,6 +36,11 @@ Route::get('login/forgot-password',[
 	'as'	=>'login.forgot'
 ]);
 
+Route::post('/qrcode-filter',[
+    'uses'	=>'TableController@qrcodeFilter',
+    'as'	=>'table.qrcodefilter'
+]);
+
 Route::get('/qrcode-view/{tableId}/{id}',[
     'uses'	=>'TableController@viewQrCode',
     'as'	=>'table.qrcodeview'
@@ -57,6 +62,16 @@ Route::group(['prefix' => 'bang', 'middleware'=>'auth'], function () {
 		'uses'	=>'TableController@create_qrcode',
 		'as'	=>'table.qrcode'
 	]);
+
+    Route::get('/loc-du-lieu/{id}/{id_col}',[
+        'uses'	=>'TableController@filterTable',
+        'as'	=>'table.filtertable'
+    ]);
+
+    Route::post('/qrcode-filter/{id}/{id_col}',[
+        'uses'	=>'TableController@grenterQrcode',
+        'as'	=>'table.grenterfiltertable'
+    ]);
 	
 	Route::get('/nhap-lieu/{slug}-{id}',[
 		'uses'	=>'TableController@getid',
@@ -248,6 +263,11 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin','middleware' => 'auth'
 			'uses' => 'TableController@adduserajax',
 			'as'  => 'admin.table.adduserajax'
 		]);
+
+        Route::post('change-view',[
+            'uses' => 'TableController@changeView',
+            'as'  => 'admin.table.ajaxchangeview'
+        ]);
 
 	});
 

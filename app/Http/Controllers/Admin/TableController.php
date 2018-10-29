@@ -172,4 +172,28 @@ class TableController extends Controller
         }
         echo json_encode('ok');
     }
+
+    public function changeView(Request $request) {
+        if($request->ajax()) {
+            try {
+                DB::beginTransaction();
+                DB::table('table')
+                    ->where('id', $request->id)
+                    ->update([ $request->col =>  $request->val]);
+                DB::commit();
+                $response =  [
+                    'code' => 200,
+                    'msg' => '',
+                ];
+                echo json_encode($response);
+            } catch (Exception $ex) {
+                $response =  [
+                    'code' => 503,
+                    'msg' => 'Has errors',
+                ];
+                echo json_encode($response);
+                DB::rollBack();
+            }
+        }
+    }
 }

@@ -74,7 +74,7 @@
         </div>
         <div class="content-wrapper">
             <div class="row">
-                @foreach($data as $value)
+                @foreach($data as $keyTable => $value)
                     <div class="col-lg-12 col-xs-12">
                         <h3 class="name-table">{{ $value['ten'] }}</h3>
                         <table class="table table-striped">
@@ -86,7 +86,7 @@
                                 @endforeach
                             </tr>
                             </thead>
-                            <tbody class="">
+                            <tbody id="content_{{ $value['tableId'] }}">
                                 @foreach($value['items'] as $key => $item)
                                     @php($item = (array) $item)
                                     <tr>
@@ -115,6 +115,30 @@
     <script src="{{ $url_public }}/vendor/raphael/raphael.min.js"></script>
     <script src="{{ $url_public }}/vendor/morrisjs/morris.min.js"></script>
     <script src="{{ $url_public }}/data/morris-data.js"></script>
+    <script type="text/javascript">
+        {{--$(document).ready(function () {--}}
+            {{--$('.filter_data').click(function () {--}}
+                {{--var tableId = $(this).attr('data-table');--}}
+                {{--var col = $('#col_'+tableId).val();--}}
+                {{--var condition = $('#condition_'+tableId).val();--}}
+                {{--var id = $(this).attr('data-id');--}}
+                {{--var url = "{{ route('table.qrcodefilter') }}";--}}
+                {{--var token = '{{ csrf_token() }}';--}}
+
+                {{--jQuery.ajax({--}}
+                    {{--type: 'POST',--}}
+                    {{--url: url,--}}
+                    {{--dataType:'json',--}}
+                    {{--data: {id:id,col:col,condition:condition,tableId:tableId,_token:token},--}}
+                    {{--success: function(data) {--}}
+                       {{--if (data.code == 200) {--}}
+                           {{--$('#content_'+tableId).html(data.data_table);--}}
+                       {{--}--}}
+                    {{--}--}}
+                {{--});--}}
+            {{--});--}}
+        {{--});--}}
+    </script>
 
 </body>
 </html>
